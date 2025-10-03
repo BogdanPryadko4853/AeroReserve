@@ -80,6 +80,7 @@
                 <div class="col-md-3">
                     <div class="fw-bold" th:text="${booking.flight.departureCity} + ' → ' + ${booking.flight.arrivalCity}"></div>
                     <div class="text-muted" th:text="${booking.flight.flightNumber}"></div>
+                    <small class="text-muted" th:text="${booking.flight.airline?.name ?: 'Unknown Airline'}"></small>
                 </div>
                 <div class="col-md-2">
                     <div class="text-muted small">Departure</div>

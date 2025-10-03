@@ -36,12 +36,16 @@ public class FlightEntity {
     @JoinColumn(name = "aircraft_id")
     private AircraftEntity aircraft;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "airline_id")
+    private AirlineEntity airline;
+
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     private List<SeatEntity> seats = new ArrayList<>();
 
     public FlightEntity(String flightNumber, String departureCity, String arrivalCity,
                         LocalDateTime departureTime, LocalDateTime arrivalTime,
-                        BigDecimal price, AircraftEntity aircraft) {
+                        BigDecimal price, AircraftEntity aircraft, AirlineEntity airline) {
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.arrivalCity = arrivalCity;
@@ -49,6 +53,7 @@ public class FlightEntity {
         this.arrivalTime = arrivalTime;
         this.price = price;
         this.aircraft = aircraft;
+        this.airline = airline;
     }
 
     public int getAvailableSeats() {
@@ -58,5 +63,12 @@ public class FlightEntity {
     public String getAircraftModel() {
         return aircraft != null ? aircraft.getModel() : "Unknown";
     }
-}
 
+    public String getAirlineName() {
+        return airline != null ? airline.getName() : "Unknown Airline";
+    }
+
+    public String getAirlineCode() {
+        return airline != null ? airline.getCode() : "N/A";
+    }
+}

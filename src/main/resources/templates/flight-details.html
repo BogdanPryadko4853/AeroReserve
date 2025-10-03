@@ -57,44 +57,44 @@
     </div>
 </nav>
 
-<div class="container mt-4">
-    <!-- Flight Information -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h3 th:text="${flight.flightNumber}"></h3>
-            <div class="row">
-                <div class="col-md-6">
-                    <strong>Route:</strong>
-                    <span th:text="${flight.departureCity} + ' → ' + ${flight.arrivalCity}"></span>
-                </div>
-                <div class="col-md-6">
-                    <strong>Date & Time:</strong>
-                    <span th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy HH:mm')}"></span>
-                </div>
+<div class="card mb-4">
+    <div class="card-body">
+        <h3 th:text="${flight.flightNumber}"></h3>
+        <div class="row">
+            <div class="col-md-6">
+                <strong>Airline:</strong>
+                <span th:text="${flight.airline?.name ?: 'Unknown Airline'}"></span>
+                <br>
+                <strong>Route:</strong>
+                <span th:text="${flight.departureCity} + ' → ' + ${flight.arrivalCity}"></span>
             </div>
-            <div class="row mt-2">
-                <div class="col-md-6">
-                    <strong>Aircraft:</strong>
-                    <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
-                </div>
-                <div class="col-md-6">
-                    <strong>Total Capacity:</strong>
-                    <span th:text="${flight.aircraft.totalSeats} + ' seats'"></span>
-                </div>
+            <div class="col-md-6">
+                <strong>Date & Time:</strong>
+                <span th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy HH:mm')}"></span>
             </div>
-            <div class="row mt-2">
-                <div class="col-md-6">
-                    <strong>Available Seats:</strong>
-                    <span class="text-success fw-bold" th:text="${flight.availableSeats}"></span>
-                </div>
-                <div class="col-md-6">
-                    <strong>Price per seat:</strong>
-                    <span class="text-success fw-bold" th:text="'$' + ${flight.price}"></span>
-                </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <strong>Aircraft:</strong>
+                <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
+            </div>
+            <div class="col-md-6">
+                <strong>Total Capacity:</strong>
+                <span th:text="${flight.aircraft.totalSeats} + ' seats'"></span>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col-md-6">
+                <strong>Available Seats:</strong>
+                <span class="text-success fw-bold" th:text="${flight.availableSeats}"></span>
+            </div>
+            <div class="col-md-6">
+                <strong>Price per seat:</strong>
+                <span class="text-success fw-bold" th:text="'$' + ${flight.price}"></span>
             </div>
         </div>
     </div>
-
+</div>
     <!-- Seat Selection -->
     <div class="card">
         <div class="card-body">

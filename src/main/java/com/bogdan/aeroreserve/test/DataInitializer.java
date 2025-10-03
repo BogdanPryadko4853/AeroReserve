@@ -1,12 +1,14 @@
 package com.bogdan.aeroreserve.test;
 
 import com.bogdan.aeroreserve.entity.AircraftEntity;
+import com.bogdan.aeroreserve.entity.AirlineEntity;
 import com.bogdan.aeroreserve.entity.FlightEntity;
 import com.bogdan.aeroreserve.entity.SeatEntity;
 import com.bogdan.aeroreserve.enums.SeatClass;
 import com.bogdan.aeroreserve.repository.FlightRepository;
 import com.bogdan.aeroreserve.repository.SeatRepository;
 import com.bogdan.aeroreserve.service.AircraftService;
+import com.bogdan.aeroreserve.service.AirlineService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -22,13 +24,24 @@ public class DataInitializer {
     private final FlightRepository flightRepository;
     private final SeatRepository seatRepository;
     private final AircraftService aircraftService;
+    private final AirlineService airlineService;
 
     @PostConstruct
     public void init() {
         if (aircraftService.getAllAircrafts().isEmpty()) {
+            createSampleAirlines();
             createSampleAircrafts();
             createSampleFlights();
         }
+    }
+
+    private void createSampleAirlines() {
+        airlineService.createAirline("AeroReserve", "AR", "International");
+        airlineService.createAirline("Aeroflot", "SU", "Russia");
+        airlineService.createAirline("Lufthansa", "LH", "Germany");
+        airlineService.createAirline("Emirates", "EK", "UAE");
+        airlineService.createAirline("British Airways", "BA", "United Kingdom");
+        airlineService.createAirline("Air France", "AF", "France");
     }
 
     private void createSampleAircrafts() {
@@ -42,32 +55,36 @@ public class DataInitializer {
 
     private void createSampleFlights() {
         List<AircraftEntity> aircrafts = aircraftService.getAllAircrafts();
+        List<AirlineEntity> airlines = airlineService.getAllAirlines();
+
+        // Основная авиакомпания для демо
+        AirlineEntity mainAirline = airlines.get(0); // AeroReserve
 
         List<FlightEntity> flights = Arrays.asList(
                 new FlightEntity("AR101", "New York", "London",
                         LocalDateTime.now().plusDays(1).withHour(8).withMinute(0),
                         LocalDateTime.now().plusDays(1).withHour(20).withMinute(0),
-                        new BigDecimal("499.99"), aircrafts.get(1)),
+                        new BigDecimal("499.99"), aircrafts.get(1), mainAirline),
                 new FlightEntity("AR102", "New York", "Paris",
                         LocalDateTime.now().plusDays(2).withHour(14).withMinute(30),
                         LocalDateTime.now().plusDays(2).withHour(23).withMinute(45),
-                        new BigDecimal("459.99"), aircrafts.get(4)),
+                        new BigDecimal("459.99"), aircrafts.get(4), mainAirline),
                 new FlightEntity("AR201", "London", "Tokyo",
                         LocalDateTime.now().plusDays(3).withHour(10).withMinute(0),
                         LocalDateTime.now().plusDays(3).withHour(18).withMinute(0),
-                        new BigDecimal("899.99"), aircrafts.get(2)),
+                        new BigDecimal("899.99"), aircrafts.get(2), mainAirline),
                 new FlightEntity("AR202", "Paris", "Dubai",
                         LocalDateTime.now().plusDays(1).withHour(16).withMinute(15),
                         LocalDateTime.now().plusDays(1).withHour(23).withMinute(30),
-                        new BigDecimal("699.99"), aircrafts.get(5)),
+                        new BigDecimal("699.99"), aircrafts.get(5), mainAirline),
                 new FlightEntity("AR301", "Tokyo", "Sydney",
                         LocalDateTime.now().plusDays(4).withHour(9).withMinute(30),
                         LocalDateTime.now().plusDays(4).withHour(22).withMinute(45),
-                        new BigDecimal("799.99"), aircrafts.get(3)),
+                        new BigDecimal("799.99"), aircrafts.get(3), mainAirline),
                 new FlightEntity("AR302", "Dubai", "Singapore",
                         LocalDateTime.now().plusDays(2).withHour(11).withMinute(0),
                         LocalDateTime.now().plusDays(2).withHour(19).withMinute(30),
-                        new BigDecimal("549.99"), aircrafts.get(0))
+                        new BigDecimal("549.99"), aircrafts.get(0), mainAirline)
         );
 
         for (FlightEntity flight : flights) {

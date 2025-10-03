@@ -76,36 +76,34 @@
     <!-- Available Flights -->
     <h3>Available Flights</h3>
 
-    <div th:if="${flights != null and !flights.empty}">
-        <div th:each="flight : ${flights}" class="card mb-3">
-            <div class="card-body">
-                <div class="row align-items-center">
-                    <div class="col-md-2">
-                        <strong class="text-primary" th:text="${flight.flightNumber}"></strong>
-                        <br>
-                        <small class="text-muted" th:text="${flight.aircraftModel}"></small>
-                        <br>
-                        <small class="text-muted" th:text="${flight.availableSeats} + ' seats left'"></small>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fw-bold" th:text="${flight.departureCity}"></div>
-                        <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
-                    </div>
-                    <div class="col-md-1 text-center">
-                        <div class="text-muted">→</div>
-                        <div class="text-muted small" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="fw-bold" th:text="${flight.arrivalCity}"></div>
-                        <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="fw-bold text-success" th:text="'$' + ${flight.price}"></div>
-                        <div class="text-muted" th:text="${flight.aircraft.totalSeats} + ' total seats'"></div>
-                    </div>
-                    <div class="col-md-1">
-                        <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-primary btn-sm">View Seats</a>
-                    </div>
+    <div th:each="flight : ${flights}" class="card mb-3">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-2">
+                    <strong class="text-primary" th:text="${flight.flightNumber}"></strong>
+                    <br>
+                    <small class="text-muted" th:text="${flight.airline?.name ?: 'Unknown Airline'}"></small>
+                    <br>
+                    <small class="text-muted" th:text="${flight.availableSeats} + ' seats left'"></small>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-bold" th:text="${flight.departureCity}"></div>
+                    <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
+                </div>
+                <div class="col-md-1 text-center">
+                    <div class="text-muted">→</div>
+                    <div class="text-muted small" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="fw-bold" th:text="${flight.arrivalCity}"></div>
+                    <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
+                </div>
+                <div class="col-md-2">
+                    <div class="fw-bold text-success" th:text="'$' + ${flight.price}"></div>
+                    <div class="text-muted" th:text="${flight.aircraft.totalSeats} + ' total seats'"></div>
+                </div>
+                <div class="col-md-1">
+                    <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-primary btn-sm">View Seats</a>
                 </div>
             </div>
         </div>
