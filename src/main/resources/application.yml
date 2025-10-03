@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: AeroReserve
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/aeroreserve_db
+    username: aeroreserve_user
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.aeroreserve: DEBUG
+    org.springframework.security: DEBUG
