@@ -1,5 +1,5 @@
 package com.bogdan.aeroreserve.enums;
 
-enum BookingStatus {
+public enum BookingStatus {
     CONFIRMED, CANCELLED, COMPLETED
 }
