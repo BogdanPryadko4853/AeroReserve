@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.aeroreserve;
+package com.bogdan.aeroreserve;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

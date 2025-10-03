@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.aeroreserve;
+package com.bogdan.aeroreserve;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
