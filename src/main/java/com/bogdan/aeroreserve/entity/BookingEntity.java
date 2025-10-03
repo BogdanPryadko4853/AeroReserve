@@ -27,7 +27,8 @@ public class BookingEntity {
     @JoinColumn(name = "flight_id")
     private FlightEntity flight;
 
-    @OneToOne(mappedBy = "booking")
+    @OneToOne
+    @JoinColumn(name = "booking_id")
     private SeatEntity seat;
 
     private String passengerName;

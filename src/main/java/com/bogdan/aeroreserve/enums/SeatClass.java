@@ -1,5 +1,5 @@
 package com.bogdan.aeroreserve.enums;
 
-enum SeatClass {
+public enum SeatClass {
     ECONOMY, BUSINESS, FIRST
 }

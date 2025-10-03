@@ -25,7 +25,8 @@ public class SeatEntity {
 
     private boolean available = true;
 
-    @OneToOne(mappedBy = "seat")
+    @OneToOne
+    @JoinColumn(name = "seat_id")
     private BookingEntity booking;
 
     public SeatEntity(FlightEntity flight, String seatNumber, SeatClass seatClass) {

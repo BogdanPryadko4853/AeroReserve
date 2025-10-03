@@ -1,5 +1,5 @@
 package com.bogdan.aeroreserve.enums;
 
-enum FlightStatus {
+public enum FlightStatus {
     SCHEDULED, BOARDING, DEPARTED, ARRIVED, CANCELLED
 }

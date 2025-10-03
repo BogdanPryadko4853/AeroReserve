@@ -1,19 +1,17 @@
 version: '3.8'
 
 services:
-
   postgres:
     image: postgres:15-alpine
     container_name: aeroreserve-db
     environment:
-      POSTGRES_DB: aeroreserve_db
-      POSTGRES_USER: aeroreserve_user
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password_123}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     networks:
       - aeroreserve-network
     healthcheck:
@@ -21,26 +19,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: aeroreserve-app
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/aeroreserve_db
-      SPRING_DATASOURCE_USERNAME: aeroreserve_user
-      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-secure_password_123}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
-      SPRING_PROFILES_ACTIVE: docker
-    ports:
-      - "8080:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
-    networks:
-      - aeroreserve-network
-    restart: unless-stopped
 
 volumes:
   postgres_data:
