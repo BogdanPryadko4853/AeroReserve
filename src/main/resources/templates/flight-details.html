@@ -90,13 +90,15 @@
                 </div>
 
                 <!-- First Class Section -->
-                <div th:if="${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).FIRST].size() > 0}"
+                <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'FIRST'])} > 0"
                      class="cabin-section first-class">
                     <h5>First Class</h5>
                     <div class="d-flex flex-wrap gap-2">
-                        <div th:each="seat : ${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).FIRST]}"
+                        <div th:each="seat : ${availableSeats}"
+                             th:if="${seat.seatClass.name() == 'FIRST'}"
                              class="seat first-class">
-                            <a th:href="@{/book/{id}(id=${flight.id}) + '?seatNumber=' + ${seat.seatNumber}}"
+                            <!-- ИСПРАВЛЕННАЯ ССЫЛКА -->
+                            <a th:href="@{/book/{flightId}(flightId=${flight.id}, seatNumber=${seat.seatNumber})}"
                                class="btn btn-warning">
                                 <span th:text="${seat.seatNumber}"></span>
                             </a>
@@ -105,13 +107,15 @@
                 </div>
 
                 <!-- Business Class Section -->
-                <div th:if="${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).BUSINESS].size() > 0}"
+                <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'BUSINESS'])} > 0"
                      class="cabin-section business-class">
                     <h5>Business Class</h5>
                     <div class="d-flex flex-wrap gap-2">
-                        <div th:each="seat : ${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).BUSINESS]}"
+                        <div th:each="seat : ${availableSeats}"
+                             th:if="${seat.seatClass.name() == 'BUSINESS'}"
                              class="seat business-class">
-                            <a th:href="@{/book/{id}(id=${flight.id}) + '?seatNumber=' + ${seat.seatNumber}}"
+                            <!-- ИСПРАВЛЕННАЯ ССЫЛКА -->
+                            <a th:href="@{/book/{flightId}(flightId=${flight.id}, seatNumber=${seat.seatNumber})}"
                                class="btn btn-primary">
                                 <span th:text="${seat.seatNumber}"></span>
                             </a>
@@ -120,13 +124,15 @@
                 </div>
 
                 <!-- Economy Class Section -->
-                <div th:if="${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).ECONOMY].size() > 0}"
+                <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'ECONOMY'])} > 0"
                      class="cabin-section economy-class">
                     <h5>Economy Class</h5>
                     <div class="d-flex flex-wrap gap-2">
-                        <div th:each="seat : ${availableSeats.?[seatClass == T(com.aeroreserve.model.SeatClass).ECONOMY]}"
+                        <div th:each="seat : ${availableSeats}"
+                             th:if="${seat.seatClass.name() == 'ECONOMY'}"
                              class="seat economy-class">
-                            <a th:href="@{/book/{id}(id=${flight.id}) + '?seatNumber=' + ${seat.seatNumber}}"
+                            <!-- ИСПРАВЛЕННАЯ ССЫЛКА -->
+                            <a th:href="@{/book/{flightId}(flightId=${flight.id}, seatNumber=${seat.seatNumber})}"
                                class="btn btn-success">
                                 <span th:text="${seat.seatNumber}"></span>
                             </a>

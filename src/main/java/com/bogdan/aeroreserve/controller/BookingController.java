@@ -53,9 +53,14 @@ public class BookingController {
             return "redirect:/dashboard?booked=" + booking.getBookingNumber();
 
         } catch (Exception e) {
+            UserEntity user = userService.findByEmail(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            model.addAttribute("user", user);
+
             model.addAttribute("error", e.getMessage());
             model.addAttribute("flight", flightService.getFlightById(flightId).orElse(null));
             model.addAttribute("availableSeats", flightService.getAvailableSeats(flightId));
+            model.addAttribute("seatNumber", seatNumber);
             return "booking-form";
         }
     }

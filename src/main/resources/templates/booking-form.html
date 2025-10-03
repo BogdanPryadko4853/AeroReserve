@@ -44,9 +44,9 @@
                                 </div>
                                 <div class="col-md-6">
                                     <strong>Class:</strong>
-                                    <span th:if="${seatNumber.contains('F')}" class="text-warning fw-bold">First Class</span>
-                                    <span th:if="${seatNumber.contains('B')}" class="text-primary fw-bold">Business Class</span>
-                                    <span th:if="${seatNumber.contains('E')}" class="text-success fw-bold">Economy Class</span>
+                                    <span th:if="${seatNumber != null and seatNumber.contains('F')}" class="text-warning fw-bold">First Class</span>
+                                    <span th:if="${seatNumber != null and seatNumber.contains('B')}" class="text-primary fw-bold">Business Class</span>
+                                    <span th:if="${seatNumber != null and seatNumber.contains('E')}" class="text-success fw-bold">Economy Class</span>
                                 </div>
                             </div>
                         </div>
