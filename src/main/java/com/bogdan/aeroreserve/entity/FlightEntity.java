@@ -21,8 +21,9 @@ public class FlightEntity {
     @Column(unique = true)
     private String flightNumber;
 
-    private String departureCity;
-    private String arrivalCity;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "route_id")
+    private RouteEntity route;
 
     private LocalDateTime departureTime;
     private LocalDateTime arrivalTime;
@@ -45,19 +46,27 @@ public class FlightEntity {
 
     public FlightEntity(String flightNumber, String departureCity, String arrivalCity,
                         LocalDateTime departureTime, LocalDateTime arrivalTime,
-                        BigDecimal price, AircraftEntity aircraft, AirlineEntity airline) {
+                        BigDecimal price, AircraftEntity aircraft, AirlineEntity airline, RouteEntity route) {
         this.flightNumber = flightNumber;
-        this.departureCity = departureCity;
-        this.arrivalCity = arrivalCity;
+
         this.departureTime = departureTime;
         this.arrivalTime = arrivalTime;
         this.price = price;
         this.aircraft = aircraft;
         this.airline = airline;
+        this.route = route;
     }
 
     public int getAvailableSeats() {
         return (int) seats.stream().filter(SeatEntity::isAvailable).count();
+    }
+
+    public String getDepartureCity() {
+        return route != null ? route.getDepartureCity().getName() : "Unknown";
+    }
+
+    public String getArrivalCity() {
+        return route != null ? route.getArrivalCity().getName() : "Unknown";
     }
 
     public String getAircraftModel() {

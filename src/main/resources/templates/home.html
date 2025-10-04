@@ -258,7 +258,7 @@
                     <div class="col-md-6">
                         <div class="row align-items-center">
                             <div class="col-md-5 text-center">
-                                <div class="fw-bold fs-5 text-dark" th:text="${flight.departureCity}"></div>
+                                <div class="fw-bold fs-5 text-dark" th:text="${flight.getDepartureCity()}"></div>
                                 <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
                             </div>
 
@@ -268,7 +268,7 @@
                             </div>
 
                             <div class="col-md-5 text-center">
-                                <div class="fw-bold fs-5 text-dark" th:text="${flight.arrivalCity}"></div>
+                                <div class="fw-bold fs-5 text-dark" th:text="${flight.getArrivalCity()}"></div>
                                 <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
                             </div>
                         </div>
