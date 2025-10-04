@@ -22,7 +22,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        // Добавляем пользователя, если он авторизован
+
         if (userDetails != null) {
             UserEntity user = userService.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -41,7 +41,6 @@ public class HomeController {
             @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
 
-        // Добавляем пользователя, если он авторизован
         if (userDetails != null) {
             UserEntity user = userService.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));
@@ -61,7 +60,6 @@ public class HomeController {
     public String flightDetails(@PathVariable Long id,
                                 @AuthenticationPrincipal UserDetails userDetails,
                                 Model model) {
-        // Добавляем пользователя, если он авторизован
         if (userDetails != null) {
             UserEntity user = userService.findByEmail(userDetails.getUsername())
                     .orElseThrow(() -> new RuntimeException("User not found"));

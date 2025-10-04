@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Statistics - AeroReserve</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .booking-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 184, 148, 0.4);
+        }
+        .btn-outline-secondary {
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-outline-secondary:hover {
+            transform: translateY(-2px);
+        }
+        .summary-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+        .flight-summary {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            background: rgba(255,255,255,0.95);
+            border-left: 4px solid #667eea;
+        }
+        .navbar {
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .alert-info {
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 4px solid #64b5f6;
+        }
+        .class-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .status-badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .info-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            border-left: 4px solid #667eea;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+        <a class="navbar-brand nav-brand" href="/">
+            <i class="fas fa-plane me-2"></i>AeroReserve
+        </a>
+        <div class="navbar-nav ms-auto">
+            <a class="nav-link" th:href="@{/}">
+                <i class="fas fa-search me-1"></i>Search Flights
+            </a>
+            <a class="nav-link" th:href="@{/dashboard}">
+                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+            </a>
+            <div class="nav-item dropdown" th:if="${user != null}">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user-circle me-1"></i>
+                    <span th:text="${user.firstName}"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" th:href="@{/profile}">
+                        <i class="fas fa-user me-2"></i>My Profile
+                    </a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form th:action="@{/logout}" method="post" class="d-inline">
+                            <button type="submit" class="dropdown-item">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+            <div class="nav-item" th:unless="${user != null}">
+                <a class="nav-link" th:href="@{/login}">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
+            </div>
+            <a class="nav-link active" th:href="@{/statistics}">Statistics</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-dark">📊 Flight Statistics</h1>
+        <a th:href="@{/statistics/refresh}" class="btn btn-outline-primary">
+            <i class="fas fa-sync-alt"></i> Refresh Data
+        </a>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary">
+                <div class="card-body">
+                    <h5 class="card-title">Total Flights</h5>
+                    <h2 th:text="${#lists.size(allStatistics)}" class="card-text">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success">
+                <div class="card-body">
+                    <h5 class="card-title">Top Performers</h5>
+                    <h2 th:text="${#lists.size(topFlights)}" class="card-text">0</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info">
+                <div class="card-body">
+                    <h5 class="card-title">Avg On-Time</h5>
+                    <h2 th:text="${#numbers.formatDecimal(#lists.isEmpty(allStatistics) ? 0 : #aggregates.avg(allStatistics.![onTimePerformance]), 1, 1)} + '%'"
+                        class="card-text">0%</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning">
+                <div class="card-body">
+                    <h5 class="card-title">Avg Satisfaction</h5>
+                    <h2 th:text="${#numbers.formatDecimal(#lists.isEmpty(allStatistics) ? 0 : #aggregates.avg(allStatistics.![customerSatisfactionScore]), 1, 1)} + '/10'"
+                        class="card-text">0/10</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Table -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="mb-0">Flight Performance Overview</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Flight</th>
+                        <th>Route</th>
+                        <th>Bookings</th>
+                        <th>Load Factor</th>
+                        <th>On-Time %</th>
+                        <th>Avg Delay</th>
+                        <th>Satisfaction</th>
+                        <th>Last Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="stats : ${allStatistics}">
+                        <td>
+                            <strong th:text="${stats.flight.flightNumber}"></strong>
+                            <br>
+                            <small class="text-muted" th:text="${stats.flight.aircraft.model}"></small>
+                        </td>
+                        <td th:text="${stats.flight.departureCity} + ' → ' + ${stats.flight.arrivalCity}"></td>
+                        <td>
+                            <span th:text="${stats.totalBookings}"></span>
+                            <br>
+                            <small class="text-muted" th:text="${stats.totalPassengers} + ' passengers'"></small>
+                        </td>
+                        <td>
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar"
+                                     th:class="${stats.loadFactor > 80 ? 'bg-success' : (stats.loadFactor > 60 ? 'bg-warning' : 'bg-danger')}"
+                                     th:style="'width: ' + ${stats.loadFactor} + '%;'"
+                                     th:text="${#numbers.formatDecimal(stats.loadFactor, 1, 1)} + '%'">
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                                    <span th:classappend="${stats.onTimePerformance > 90 ? 'text-success fw-bold' : (stats.onTimePerformance > 80 ? 'text-warning' : 'text-danger')}"
+                                          th:text="${#numbers.formatDecimal(stats.onTimePerformance, 1, 1)} + '%'">
+                                    </span>
+                        </td>
+                        <td th:text="${#numbers.formatDecimal(stats.averageDelayMinutes, 1, 1)} + ' min'"></td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span th:text="${#numbers.formatDecimal(stats.customerSatisfactionScore, 1, 1)}"></span>
+                                <div class="ms-2">
+                                    <i class="fas fa-star text-warning" th:each="i : ${#numbers.sequence(1, 5)}"
+                                       th:classappend="${i <= stats.customerSatisfactionScore / 2} ? 'text-warning' : 'text-muted'"></i>
+                                </div>
+                            </div>
+                        </td>
+                        <td th:text="${#temporals.format(stats.lastUpdated, 'MMM dd, HH:mm')}"></td>
+                        <td>
+                            <a th:href="@{/statistics/flight/{id}(id=${stats.flight.id})}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-chart-bar"></i> Details
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${allStatistics.empty}" class="text-center py-5">
+                <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+                <h4>No statistics available</h4>
+                <p class="text-muted">Flight statistics will appear here once data is collected.</p>
+                <a th:href="@{/statistics/refresh}" class="btn btn-primary">
+                    <i class="fas fa-sync-alt"></i> Generate Demo Data
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Performers Section -->
+    <div th:if="${not topFlights.empty}" class="card mt-4">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">🏆 Top Performing Flights (On-Time ≥ 90%)</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div th:each="stats : ${topFlights}" class="col-md-4 mb-3">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h6 class="card-title" th:text="${stats.flight.flightNumber}"></h6>
+                            <p class="card-text text-muted"
+                               th:text="${stats.flight.departureCity} + ' → ' + ${stats.flight.arrivalCity}"></p>
+                            <div class="d-flex justify-content-between">
+                                    <span class="text-success">
+                                        <i class="fas fa-clock"></i>
+                                        <span th:text="${#numbers.formatDecimal(stats.onTimePerformance, 1, 1)} + '%'"></span>
+                                    </span>
+                                <span class="text-warning">
+                                        <i class="fas fa-star"></i>
+                                        <span th:text="${#numbers.formatDecimal(stats.customerSatisfactionScore, 1, 1)}"></span>
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

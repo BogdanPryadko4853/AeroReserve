@@ -3,10 +3,7 @@ package com.bogdan.aeroreserve.test;
 import com.bogdan.aeroreserve.entity.*;
 import com.bogdan.aeroreserve.enums.SeatClass;
 import com.bogdan.aeroreserve.repository.*;
-import com.bogdan.aeroreserve.service.AircraftService;
-import com.bogdan.aeroreserve.service.AirlineService;
-import com.bogdan.aeroreserve.service.CityService;
-import com.bogdan.aeroreserve.service.CountryService;
+import com.bogdan.aeroreserve.service.*;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -27,6 +24,7 @@ public class DataInitializer {
     private final CountryService countryService;
     private final CityService cityService;
     private final RouteRepository routeRepository;
+    private final FlightStatisticsService statisticsService;
 
     @PostConstruct
     public void init() {
@@ -37,6 +35,7 @@ public class DataInitializer {
             createSampleAircrafts();
             createSampleRoutes();
             createSampleFlights();
+            statisticsService.initializeStatisticsForAllFlights();
         }
     }
 

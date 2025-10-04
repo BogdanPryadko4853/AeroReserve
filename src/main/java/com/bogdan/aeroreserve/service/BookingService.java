@@ -51,4 +51,8 @@ public class BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
     }
+
+    public List<BookingEntity> getBookingsByFlight(FlightEntity flight) {
+        return bookingRepository.findByFlight(flight);
+    }
 }
