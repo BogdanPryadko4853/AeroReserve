@@ -46,6 +46,7 @@ public class FlightEntity {
     public FlightEntity(String flightNumber, String departureCity, String arrivalCity,
                         LocalDateTime departureTime, LocalDateTime arrivalTime,
                         BigDecimal price, AircraftEntity aircraft, AirlineEntity airline) {
+                        BigDecimal price, AircraftEntity aircraft) {
         this.flightNumber = flightNumber;
         this.departureCity = departureCity;
         this.arrivalCity = arrivalCity;
@@ -72,3 +73,5 @@ public class FlightEntity {
         return airline != null ? airline.getCode() : "N/A";
     }
 }
+}
+

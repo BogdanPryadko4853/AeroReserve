@@ -61,6 +61,9 @@ public class BookingController {
             model.addAttribute("flight", flightService.getFlightById(flightId).orElse(null));
             model.addAttribute("availableSeats", flightService.getAvailableSeats(flightId));
             model.addAttribute("seatNumber", seatNumber);
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("flight", flightService.getFlightById(flightId).orElse(null));
+            model.addAttribute("availableSeats", flightService.getAvailableSeats(flightId));
             return "booking-form";
         }
     }

@@ -129,6 +129,11 @@
                 </a>
             </div>
         </div>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" href="/">✈️ AeroReserve</a>
     </div>
 </nav>
 
@@ -251,6 +256,89 @@
                         </a>
                     </div>
                 </form>
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4">Confirm Your Booking</h3>
+
+                    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+                    <!-- Flight Summary -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0">Flight Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong th:text="${flight.flightNumber}"></strong><br>
+                                    <span th:text="${flight.departureCity} + ' → ' + ${flight.arrivalCity}"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <span th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy HH:mm')}"></span><br>
+                                    <span class="text-success fw-bold" th:text="'Seat: ' + ${seatNumber}"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <strong>Aircraft:</strong>
+                                    <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>Class:</strong>
+                                    <span th:if="${seatNumber.contains('F')}" class="text-warning fw-bold">First Class</span>
+                                    <span th:if="${seatNumber.contains('B')}" class="text-primary fw-bold">Business Class</span>
+                                    <span th:if="${seatNumber.contains('E')}" class="text-success fw-bold">Economy Class</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Form -->
+                    <form th:action="@{/book/{id}(id=${flight.id})}" method="post">
+                        <input type="hidden" name="seatNumber" th:value="${seatNumber}">
+
+                        <div class="mb-4">
+                            <h5>Passenger Information</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Passenger Name</label>
+                                <input type="text" name="passengerName" class="form-control"
+                                       th:value="${user.firstName + ' ' + user.lastName}" required>
+                                <div class="form-text">Enter the name of the passenger for this seat</div>
+                            </div>
+                        </div>
+
+                        <!-- Free Booking Notice -->
+                        <div class="alert alert-info">
+                            <h6>🎉 Free Demo Booking</h6>
+                            <p class="mb-0">This is a demonstration system. No payment is required for booking.</p>
+                        </div>
+
+                        <!-- Price Summary -->
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h6>Booking Summary</h6>
+                                <div class="d-flex justify-content-between">
+                                    <span>Seat <strong th:text="${seatNumber}"></strong></span>
+                                    <span th:text="'$' + ${flight.price}"></span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span>Total</span>
+                                    <span th:text="'$' + ${flight.price}"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                ✅ Confirm Free Booking
+                            </button>
+                            <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-outline-secondary">
+                                ← Choose Different Seat
+                            </a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>

@@ -84,6 +84,27 @@ public class DataInitializer {
                         LocalDateTime.now().plusDays(2).withHour(11).withMinute(0),
                         LocalDateTime.now().plusDays(2).withHour(19).withMinute(30),
                         new BigDecimal("549.99"), aircrafts.get(0), mainAirline)
+                        new BigDecimal("499.99"), aircrafts.get(1)),
+                new FlightEntity("AR102", "New York", "Paris",
+                        LocalDateTime.now().plusDays(2).withHour(14).withMinute(30),
+                        LocalDateTime.now().plusDays(2).withHour(23).withMinute(45),
+                        new BigDecimal("459.99"), aircrafts.get(4)),
+                new FlightEntity("AR201", "London", "Tokyo",
+                        LocalDateTime.now().plusDays(3).withHour(10).withMinute(0),
+                        LocalDateTime.now().plusDays(3).withHour(18).withMinute(0),
+                        new BigDecimal("899.99"), aircrafts.get(2)),
+                new FlightEntity("AR202", "Paris", "Dubai",
+                        LocalDateTime.now().plusDays(1).withHour(16).withMinute(15),
+                        LocalDateTime.now().plusDays(1).withHour(23).withMinute(30),
+                        new BigDecimal("699.99"), aircrafts.get(5)),
+                new FlightEntity("AR301", "Tokyo", "Sydney",
+                        LocalDateTime.now().plusDays(4).withHour(9).withMinute(30),
+                        LocalDateTime.now().plusDays(4).withHour(22).withMinute(45),
+                        new BigDecimal("799.99"), aircrafts.get(3)),
+                new FlightEntity("AR302", "Dubai", "Singapore",
+                        LocalDateTime.now().plusDays(2).withHour(11).withMinute(0),
+                        LocalDateTime.now().plusDays(2).withHour(19).withMinute(30),
+                        new BigDecimal("549.99"), aircrafts.get(0))
         );
 
         for (FlightEntity flight : flights) {
