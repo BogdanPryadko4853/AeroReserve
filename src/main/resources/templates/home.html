@@ -2,17 +2,137 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>AeroReserve - Find Your Flight</title>
+    <title>AeroReserve - Find Your Perfect Flight</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23ffffff" opacity="0.1"><path d="M500 50Q400 90 300 50Q200 10 100 50Q0 90 0 50L0 100L1000 100L1000 50Q900 10 800 50Q700 90 600 50Q500 10 500 50Z"/></svg>') bottom center/cover;
+        }
+        .search-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .flight-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+        .flight-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        .airline-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .route-arrow {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .price-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .seats-badge {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .navbar {
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .flight-route {
+            position: relative;
+            padding: 0 20px;
+        }
+        .flight-route::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            transform: translateY(-50%);
+        }
+    </style>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/">✈️ AeroReserve</a>
+        <a class="navbar-brand nav-brand" href="/">
+            <i class="fas fa-plane me-2"></i>AeroReserve
+        </a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link" th:href="@{/}">Search Flights</a>
-            <a class="nav-link" th:href="@{/dashboard}">My Bookings</a>
+            <a class="nav-link active" th:href="@{/}">
+                <i class="fas fa-search me-1"></i>Search Flights
+            </a>
+            <a class="nav-link" th:href="@{/dashboard}">
+                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+            </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,7 +154,9 @@
                 </ul>
             </div>
             <div class="nav-item" th:unless="${user != null}">
-                <a class="nav-link" th:href="@{/login}">Login</a>
+                <a class="nav-link" th:href="@{/login}">
+                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                </a>
             </div>
         </div>
     </div>
@@ -42,83 +164,169 @@
 
 <div class="container mt-4">
     <!-- Hero Section -->
-    <div class="jumbotron bg-light p-5 rounded mb-4">
-        <h1 class="display-4">Find Your Perfect Flight</h1>
-        <p class="lead">Search and book flights with ease. No payment required for demo.</p>
-    </div>
-
-    <!-- Search Form -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h4 class="card-title">Search Flights</h4>
-            <form th:action="@{/search}" method="get">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <input type="text" name="from" class="form-control" placeholder="From City" required
-                               th:value="${from != null} ? ${from} : ''">
+    <div class="hero-section p-5 mb-5 text-center position-relative">
+        <div class="position-relative z-1">
+            <h1 class="display-4 fw-bold mb-3">✈️ Discover Your Next Adventure</h1>
+            <p class="lead mb-4 fs-5">Book flights effortlessly with our modern booking platform. Experience the future of air travel.</p>
+            <div class="row justify-content-center mt-5">
+                <div class="col-md-3 mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt text-white fs-4"></i>
                     </div>
-                    <div class="col-md-3">
-                        <input type="text" name="to" class="form-control" placeholder="To City" required
-                               th:value="${to != null} ? ${to} : ''">
+                    <h6 class="fw-bold">Instant Booking</h6>
+                    <small class="opacity-75">Book in under 60 seconds</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt text-white fs-4"></i>
                     </div>
-                    <div class="col-md-3">
-                        <input type="date" name="date" class="form-control" required
-                               th:value="${date != null} ? ${date} : ''">
+                    <h6 class="fw-bold">Secure & Safe</h6>
+                    <small class="opacity-75">Your data is protected</small>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe text-white fs-4"></i>
                     </div>
-                    <div class="col-md-3">
-                        <button type="submit" class="btn btn-primary w-100">Search Flights</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Available Flights -->
-    <h3>Available Flights</h3>
-
-    <div th:each="flight : ${flights}" class="card mb-3">
-        <div class="card-body">
-            <div class="row align-items-center">
-                <div class="col-md-2">
-                    <strong class="text-primary" th:text="${flight.flightNumber}"></strong>
-                    <br>
-                    <small class="text-muted" th:text="${flight.airline?.name ?: 'Unknown Airline'}"></small>
-                    <br>
-                    <small class="text-muted" th:text="${flight.availableSeats} + ' seats left'"></small>
-                </div>
-                <div class="col-md-3">
-                    <div class="fw-bold" th:text="${flight.departureCity}"></div>
-                    <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
-                </div>
-                <div class="col-md-1 text-center">
-                    <div class="text-muted">→</div>
-                    <div class="text-muted small" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
-                </div>
-                <div class="col-md-3">
-                    <div class="fw-bold" th:text="${flight.arrivalCity}"></div>
-                    <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
-                </div>
-                <div class="col-md-2">
-                    <div class="fw-bold text-success" th:text="'$' + ${flight.price}"></div>
-                    <div class="text-muted" th:text="${flight.aircraft.totalSeats} + ' total seats'"></div>
-                </div>
-                <div class="col-md-1">
-                    <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-primary btn-sm">View Seats</a>
+                    <h6 class="fw-bold">Global Reach</h6>
+                    <small class="opacity-75">Flights worldwide</small>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:if="${flights != null and flights.empty}" class="alert alert-info">
-        <h5>No flights found</h5>
-        <p>No flights match your search criteria. Try different cities or dates.</p>
+    <!-- Search Form -->
+    <div class="search-card p-4 mb-5">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold text-dark mb-2">Find Your Perfect Flight</h2>
+            <p class="text-muted">Search across thousands of destinations worldwide</p>
+        </div>
+        <form th:action="@{/search}" method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label fw-semibold text-dark">From</label>
+                        <input type="text" name="from" class="form-control form-control-lg" placeholder="Departure city" required
+                               th:value="${from != null} ? ${from} : ''">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label fw-semibold text-dark">To</label>
+                        <input type="text" name="to" class="form-control form-control-lg" placeholder="Destination city" required
+                               th:value="${to != null} ? ${to} : ''">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label fw-semibold text-dark">Departure Date</label>
+                        <input type="date" name="date" class="form-control form-control-lg" required
+                               th:value="${date != null} ? ${date} : ''">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label fw-semibold text-dark">&nbsp;</label>
+                        <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                            <i class="fas fa-search me-2"></i>Search Flights
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 
-    <div th:if="${flights == null}" class="alert alert-info">
-        <h5>Welcome to AeroReserve</h5>
-        <p>Use the search form above to find available flights or browse all flights below.</p>
+    <!-- Available Flights -->
+    <div class="mb-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-dark">✨ Available Flights</h2>
+            <span class="badge bg-primary fs-6" th:text="${flights != null ? flights.size() : '0'} + ' flights'"></span>
+        </div>
+
+        <div th:if="${flights != null and !flights.empty}">
+            <div th:each="flight : ${flights}" class="flight-card p-4 mb-4 bg-white">
+                <div class="row align-items-center">
+                    <div class="col-md-2">
+                        <div class="d-flex align-items-center mb-2">
+                            <strong class="text-primary fs-5" th:text="${flight.flightNumber}"></strong>
+                        </div>
+                        <span class="airline-badge" th:text="${flight.airline?.name ?: 'AeroReserve'}"></span>
+                        <div class="mt-2">
+                            <span class="seats-badge" th:text="${flight.availableSeats} + ' seats left'"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="row align-items-center">
+                            <div class="col-md-5 text-center">
+                                <div class="fw-bold fs-5 text-dark" th:text="${flight.departureCity}"></div>
+                                <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
+                            </div>
+
+                            <div class="col-md-2 text-center flight-route">
+                                <div class="route-arrow">➝</div>
+                                <div class="text-muted small mt-1" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                            </div>
+
+                            <div class="col-md-5 text-center">
+                                <div class="fw-bold fs-5 text-dark" th:text="${flight.arrivalCity}"></div>
+                                <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 text-center">
+                        <div class="price-tag mb-1" th:text="'$' + ${flight.price}"></div>
+                        <small class="text-muted" th:text="${flight.aircraft.totalSeats} + ' total seats'"></small>
+                    </div>
+
+                    <div class="col-md-2 text-end">
+                        <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-primary btn-lg px-4">
+                            <i class="fas fa-chair me-2"></i>Select Seats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:if="${flights != null and flights.empty}" class="text-center py-5">
+            <div class="search-card p-5">
+                <i class="fas fa-plane-slash text-muted fs-1 mb-3"></i>
+                <h4 class="text-dark mb-3">No flights found</h4>
+                <p class="text-muted mb-4">We couldn't find any flights matching your search criteria. Try adjusting your search parameters.</p>
+                <a th:href="@{/}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-redo me-2"></i>Search Again
+                </a>
+            </div>
+        </div>
+
+        <div th:if="${flights == null}" class="text-center py-5">
+            <div class="search-card p-5">
+                <i class="fas fa-globe-americas text-primary fs-1 mb-3"></i>
+                <h4 class="text-dark mb-3">Ready to Explore?</h4>
+                <p class="text-muted mb-4">Use the search form above to discover amazing flight deals to destinations around the world.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="row text-start">
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <span>Best Prices Guaranteed</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-clock text-info me-2"></i>
+                                <span>24/7 Support</span>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <i class="fas fa-lock text-success me-2"></i>
+                                <span>Secure Booking</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -5,17 +5,82 @@
     <title>My Profile - AeroReserve</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+        .info-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .nav-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border: 5px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .stat-badge {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+    </style>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<body style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="/">✈️ AeroReserve</a>
+        <a class="navbar-brand nav-brand" href="/">
+            <i class="fas fa-plane me-2"></i>AeroReserve
+        </a>
         <div class="navbar-nav ms-auto">
-            <a class="nav-link" th:href="@{/}">Search Flights</a>
-            <a class="nav-link" th:href="@{/dashboard}">My Bookings</a>
-            <div class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+            <a class="nav-link" th:href="@{/}">
+                <i class="fas fa-search me-1"></i>Search Flights
+            </a>
+            <a class="nav-link" th:href="@{/dashboard}">
+                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+            </a>
+            <div class="nav-item dropdown" th:if="${user != null}">
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
                    data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-user-circle me-1"></i>
                     <span th:text="${user.firstName}"></span>
@@ -40,94 +105,126 @@
 
 <div class="container mt-4">
     <!-- Profile Header -->
+    <div class="hero-section p-5 mb-5 text-center position-relative">
+        <div class="position-relative z-1">
+            <h1 class="display-5 fw-bold mb-3">👤 My Profile</h1>
+            <p class="lead mb-3 fs-5">Manage your personal information and booking history</p>
+            <div class="stat-badge d-inline-block">
+                <i class="fas fa-ticket-alt me-2"></i>
+                <span th:text="${bookings.size()}"></span> Total Bookings
+            </div>
+        </div>
+    </div>
+
     <div class="row">
-        <div class="col-md-4">
-            <div class="card">
-                <div class="card-body text-center">
-                    <div class="mb-3">
-                        <i class="fas fa-user-circle fa-5x text-primary"></i>
+        <!-- Profile Sidebar -->
+        <div class="col-md-4 mb-4">
+            <div class="profile-card p-4 text-center">
+                <div class="user-avatar">
+                    <i class="fas fa-user text-white fs-1"></i>
+                </div>
+                <h4 class="fw-bold" th:text="${user.firstName + ' ' + user.lastName}"></h4>
+                <p class="text-muted" th:text="${user.email}"></p>
+                <span class="badge bg-primary fs-6 p-2" th:text="${user.role}"></span>
+
+                <div class="mt-4 pt-3 border-top">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="fw-bold fs-4" th:text="${bookings.size()}"></div>
+                            <small class="text-muted">Bookings</small>
+                        </div>
+                        <div class="col-6">
+                            <div class="fw-bold fs-4" th:text="${#temporals.format(user.createdAt, 'yyyy')}"></div>
+                            <small class="text-muted">Member Since</small>
+                        </div>
                     </div>
-                    <h4 th:text="${user.firstName + ' ' + user.lastName}"></h4>
-                    <p class="text-muted" th:text="${user.email}"></p>
-                    <span class="badge bg-primary" th:text="${user.role}"></span>
                 </div>
             </div>
         </div>
 
+        <!-- Profile Content -->
         <div class="col-md-8">
-            <!-- User Information -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Personal Information</h5>
+            <!-- Personal Information -->
+            <div class="info-card p-4 mb-4">
+                <div class="d-flex align-items-center mb-3">
+                    <i class="fas fa-info-circle text-primary fs-4 me-2"></i>
+                    <h4 class="fw-bold mb-0">Personal Information</h4>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>First Name:</strong>
-                            <p th:text="${user.firstName}"></p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Last Name:</strong>
-                            <p th:text="${user.lastName}"></p>
-                        </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">First Name:</strong>
+                        <p class="fs-5" th:text="${user.firstName}"></p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Email:</strong>
-                            <p th:text="${user.email}"></p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Phone:</strong>
-                            <p th:text="${user.phoneNumber != null} ? ${user.phoneNumber} : 'Not provided'"></p>
-                        </div>
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">Last Name:</strong>
+                        <p class="fs-5" th:text="${user.lastName}"></p>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <strong>Member since:</strong>
-                            <p th:text="${#temporals.format(user.createdAt, 'MMMM dd, yyyy')}"></p>
-                        </div>
-                        <div class="col-md-6">
-                            <strong>Total bookings:</strong>
-                            <p th:text="${bookings.size()}"></p>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">Email:</strong>
+                        <p class="fs-5" th:text="${user.email}"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">Phone:</strong>
+                        <p class="fs-5" th:text="${user.phoneNumber != null} ? ${user.phoneNumber} : 'Not provided'"></p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">Member since:</strong>
+                        <p class="fs-5" th:text="${#temporals.format(user.createdAt, 'MMMM dd, yyyy')}"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <strong class="text-primary">Total bookings:</strong>
+                        <p class="fs-5" th:text="${bookings.size()}"></p>
                     </div>
                 </div>
             </div>
 
             <!-- Recent Bookings -->
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-ticket-alt me-2"></i>Recent Bookings</h5>
-                    <a th:href="@{/dashboard}" class="btn btn-sm btn-primary">View All</a>
-                </div>
-                <div class="card-body">
-                    <div th:if="${bookings.empty}" class="text-center py-4">
-                        <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
-                        <h5>No bookings yet</h5>
-                        <p class="text-muted">You haven't made any bookings yet.</p>
-                        <a th:href="@{/}" class="btn btn-primary">Book Your First Flight</a>
+            <div class="info-card p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-ticket-alt text-primary fs-4 me-2"></i>
+                        <h4 class="fw-bold mb-0">Recent Bookings</h4>
                     </div>
+                    <a th:href="@{/dashboard}" class="btn btn-primary">
+                        <i class="fas fa-list me-2"></i>View All
+                    </a>
+                </div>
 
-                    <div th:each="booking : ${bookings}" class="border-bottom pb-3 mb-3">
-                        <div class="row align-items-center">
-                            <div class="col-md-3">
-                                <strong class="text-primary" th:text="${booking.bookingNumber}"></strong>
-                                <br>
-                                <span class="badge"
-                                      th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success' :
-                      (${booking.status == 'CANCELLED'} ? 'bg-secondary' : 'bg-warning')"
-                                      th:text="${booking.status}"></span>
-                            </div>
-                            <div class="col-md-5">
-                                <div th:text="${booking.flight.departureCity + ' → ' + booking.flight.arrivalCity}"></div>
-                                <small class="text-muted" th:text="${#temporals.format(booking.flight.departureTime, 'MMM dd, yyyy')}"></small>
-                            </div>
-                            <div class="col-md-2">
-                                <span th:text="'Seat ' + ${booking.seat.seatNumber}"></span>
-                            </div>
-                            <div class="col-md-2 text-end">
-                                <a th:href="@{/dashboard}" class="btn btn-sm btn-outline-primary">Details</a>
-                            </div>
+                <div th:if="${bookings.empty}" class="text-center py-4">
+                    <i class="fas fa-ticket-alt text-muted fs-1 mb-3"></i>
+                    <h5 class="text-dark mb-3">No Bookings Yet</h5>
+                    <p class="text-muted mb-4">You haven't made any bookings yet.</p>
+                    <a th:href="@{/}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search me-2"></i>Book Your First Flight
+                    </a>
+                </div>
+
+                <div th:each="booking : ${bookings}" class="border-bottom pb-3 mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-3">
+                            <strong class="text-primary d-block" th:text="${booking.bookingNumber}"></strong>
+                            <span class="badge"
+                                  th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success' :
+                                                      (${booking.status == 'CANCELLED'} ? 'bg-secondary' : 'bg-warning')"
+                                  th:text="${booking.status}"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="fw-semibold" th:text="${booking.flight.departureCity} + ' → ' + ${booking.flight.arrivalCity}"></div>
+                            <small class="text-muted" th:text="${#temporals.format(booking.flight.departureTime, 'MMM dd, yyyy')}"></small>
+                            <br>
+                            <small class="text-primary" th:text="${booking.flight.airline?.name ?: 'AeroReserve'}"></small>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="fw-bold" th:text="'Seat ' + ${booking.seat.seatNumber}"></span>
+                        </div>
+                        <div class="col-md-2 text-end">
+                            <a th:href="@{/dashboard}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye me-1"></i>Details
+                            </a>
                         </div>
                     </div>
                 </div>

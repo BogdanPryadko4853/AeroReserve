@@ -57,8 +57,7 @@ public class DataInitializer {
         List<AircraftEntity> aircrafts = aircraftService.getAllAircrafts();
         List<AirlineEntity> airlines = airlineService.getAllAirlines();
 
-        // Основная авиакомпания для демо
-        AirlineEntity mainAirline = airlines.get(0); // AeroReserve
+        AirlineEntity mainAirline = airlines.get(0);
 
         List<FlightEntity> flights = Arrays.asList(
                 new FlightEntity("AR101", "New York", "London",
@@ -91,6 +90,8 @@ public class DataInitializer {
             FlightEntity savedFlight = flightRepository.save(flight);
             createSeatsForFlight(savedFlight);
         }
+
+
     }
 
     private void createSeatsForFlight(FlightEntity flight) {
