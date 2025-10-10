@@ -117,6 +117,19 @@
             background: linear-gradient(90deg, transparent, #667eea, transparent);
             transform: translateY(-50%);
         }
+        .pagination .page-link {
+            border-radius: 10px;
+            margin: 0 3px;
+            border: none;
+            color: #667eea;
+        }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+        }
+        .pagination .page-item.disabled .page-link {
+            color: #6c757d;
+        }
     </style>
 </head>
 <body style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
@@ -240,7 +253,12 @@
     <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-dark">✨ Available Flights</h2>
-            <span class="badge bg-primary fs-6" th:text="${flights != null ? flights.size() : '0'} + ' flights'"></span>
+            <div class="text-end">
+                <span class="badge bg-primary fs-6" th:text="${totalItems} + ' total flights'"></span>
+                <div th:if="${totalPages > 1}" class="text-muted small">
+                    Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>
+                </div>
+            </div>
         </div>
 
         <div th:if="${flights != null and !flights.empty}">
@@ -322,6 +340,80 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <div th:if="${totalPages > 1}" class="row mt-5">
+        <div class="col-md-12">
+            <nav aria-label="Flight pagination">
+                <ul class="pagination justify-content-center">
+                    <!-- Previous Page -->
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="${from != null and to != null and date != null} ?
+                                   @{/search(from=${from}, to=${to}, date=${date}, page=${currentPage - 1}, size=${pageSize})} :
+                                   @{/(page=${currentPage - 1}, size=${pageSize})}"
+                           th:if="${currentPage > 0}">
+                            <i class="fas fa-chevron-left me-1"></i>Previous
+                        </a>
+                        <span class="page-link" th:unless="${currentPage > 0}">
+                            <i class="fas fa-chevron-left me-1"></i>Previous
+                        </span>
+                    </li>
+
+                    <!-- Page Numbers -->
+                    <li th:each="page : ${#numbers.sequence(0, totalPages - 1)}"
+                        class="page-item"
+                        th:classappend="${page == currentPage} ? 'active'">
+                        <a class="page-link"
+                           th:href="${from != null and to != null and date != null} ?
+                                   @{/search(from=${from}, to=${to}, date=${date}, page=${page}, size=${pageSize})} :
+                                   @{/(page=${page}, size=${pageSize})}"
+                           th:text="${page + 1}"></a>
+                    </li>
+
+                    <!-- Next Page -->
+                    <li class="page-item" th:classappend="${currentPage >= totalPages - 1} ? 'disabled'">
+                        <a class="page-link"
+                           th:href="${from != null and to != null and date != null} ?
+                                   @{/search(from=${from}, to=${to}, date=${date}, page=${currentPage + 1}, size=${pageSize})} :
+                                   @{/(page=${currentPage + 1}, size=${pageSize})}"
+                           th:if="${currentPage < totalPages - 1}">
+                            Next<i class="fas fa-chevron-right ms-1"></i>
+                        </a>
+                        <span class="page-link" th:unless="${currentPage < totalPages - 1}">
+                            Next<i class="fas fa-chevron-right ms-1"></i>
+                        </span>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Page Info -->
+            <div class="text-center mt-3">
+                <p class="text-muted">
+                    Showing <span th:text="${currentPage * pageSize + 1}"></span> -
+                    <span th:text="${(currentPage * pageSize + pageSize) > totalItems ? totalItems : (currentPage * pageSize + pageSize)}"></span>
+                    of <span th:text="${totalItems}"></span> flights
+                </p>
+                <div class="btn-group btn-group-sm">
+                    <a th:href="${from != null and to != null and date != null} ?
+                               @{/search(from=${from}, to=${to}, date=${date}, page=0, size=10)} :
+                               @{/(page=0, size=10)}"
+                       class="btn btn-outline-primary"
+                       th:classappend="${pageSize == 10} ? 'active'">10</a>
+                    <a th:href="${from != null and to != null and date != null} ?
+                               @{/search(from=${from}, to=${to}, date=${date}, page=0, size=25)} :
+                               @{/(page=0, size=25)}"
+                       class="btn btn-outline-primary"
+                       th:classappend="${pageSize == 25} ? 'active'">25</a>
+                    <a th:href="${from != null and to != null and date != null} ?
+                               @{/search(from=${from}, to=${to}, date=${date}, page=0, size=50)} :
+                               @{/(page=0, size=50)}"
+                       class="btn btn-outline-primary"
+                       th:classappend="${pageSize == 50} ? 'active'">50</a>
                 </div>
             </div>
         </div>

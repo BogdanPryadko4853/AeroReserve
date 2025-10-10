@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class DataInitializer {
     private final CityService cityService;
     private final RouteRepository routeRepository;
     private final FlightStatisticsService statisticsService;
+    private final Random random = new Random();
 
     @PostConstruct
     public void init() {
@@ -49,6 +51,8 @@ public class DataInitializer {
         countryService.createCountry("Australia", "AU", "AUD", "Australia/Sydney");
         countryService.createCountry("Singapore", "SG", "SGD", "Asia/Singapore");
         countryService.createCountry("Russia", "RU", "RUB", "Europe/Moscow");
+        countryService.createCountry("Canada", "CA", "CAD", "America/Toronto");
+        countryService.createCountry("China", "CN", "CNY", "Asia/Shanghai");
     }
 
     private void createSampleCities() {
@@ -63,6 +67,8 @@ public class DataInitializer {
         CountryEntity au = countries.stream().filter(c -> c.getCode().equals("AU")).findFirst().get();
         CountryEntity sg = countries.stream().filter(c -> c.getCode().equals("SG")).findFirst().get();
         CountryEntity ru = countries.stream().filter(c -> c.getCode().equals("RU")).findFirst().get();
+        CountryEntity ca = countries.stream().filter(c -> c.getCode().equals("CA")).findFirst().get();
+        CountryEntity cn = countries.stream().filter(c -> c.getCode().equals("CN")).findFirst().get();
 
         cityService.createCity("New York", "NYC", us);
         cityService.createCity("London", "LON", uk);
@@ -75,6 +81,12 @@ public class DataInitializer {
         cityService.createCity("Moscow", "SVO", ru);
         cityService.createCity("Los Angeles", "LAX", us);
         cityService.createCity("Chicago", "ORD", us);
+        cityService.createCity("Toronto", "YYZ", ca);
+        cityService.createCity("Beijing", "PEK", cn);
+        cityService.createCity("Shanghai", "PVG", cn);
+        cityService.createCity("Frankfurt", "FRA", de);
+        cityService.createCity("Amsterdam", "AMS", countries.stream().filter(c -> c.getCode().equals("NL")).findFirst().orElse(de));
+        cityService.createCity("Istanbul", "IST", countries.stream().filter(c -> c.getCode().equals("TR")).findFirst().orElse(ru));
     }
 
     private void createSampleAirlines() {
@@ -86,6 +98,12 @@ public class DataInitializer {
         airlineService.createAirline("Air France", "AF", "France");
         airlineService.createAirline("Delta Air Lines", "DL", "United States");
         airlineService.createAirline("Singapore Airlines", "SQ", "Singapore");
+        airlineService.createAirline("Qatar Airways", "QR", "Qatar");
+        airlineService.createAirline("Turkish Airlines", "TK", "Turkey");
+        airlineService.createAirline("Qantas", "QF", "Australia");
+        airlineService.createAirline("Air Canada", "AC", "Canada");
+        airlineService.createAirline("Japan Airlines", "JL", "Japan");
+        airlineService.createAirline("Korean Air", "KE", "South Korea");
     }
 
     private void createSampleAircrafts() {
@@ -95,6 +113,9 @@ public class DataInitializer {
         aircraftService.createAircraft("Airbus A320", "Airbus", 150, 0, 0);
         aircraftService.createAircraft("Airbus A330", "Airbus", 200, 36, 12);
         aircraftService.createAircraft("Airbus A380", "Airbus", 400, 80, 20);
+        aircraftService.createAircraft("Boeing 747-8", "Boeing", 350, 60, 15);
+        aircraftService.createAircraft("Airbus A350", "Airbus", 280, 40, 18);
+        aircraftService.createAircraft("Embraer E195", "Embraer", 120, 0, 0);
     }
 
     private void createSampleRoutes() {
@@ -108,63 +129,43 @@ public class DataInitializer {
         CityEntity sydney = cities.stream().filter(c -> c.getIataCode().equals("SYD")).findFirst().get();
         CityEntity singapore = cities.stream().filter(c -> c.getIataCode().equals("SIN")).findFirst().get();
         CityEntity moscow = cities.stream().filter(c -> c.getIataCode().equals("SVO")).findFirst().get();
+        CityEntity losAngeles = cities.stream().filter(c -> c.getIataCode().equals("LAX")).findFirst().get();
+        CityEntity chicago = cities.stream().filter(c -> c.getIataCode().equals("ORD")).findFirst().get();
+        CityEntity toronto = cities.stream().filter(c -> c.getIataCode().equals("YYZ")).findFirst().get();
+        CityEntity beijing = cities.stream().filter(c -> c.getIataCode().equals("PEK")).findFirst().get();
+        CityEntity frankfurt = cities.stream().filter(c -> c.getIataCode().equals("FRA")).findFirst().get();
+        CityEntity istanbul = cities.stream().filter(c -> c.getIataCode().equals("IST")).findFirst().get();
 
-        // Создаем маршруты
-        RouteEntity route1 = new RouteEntity();
-        route1.setDepartureCity(newYork);
-        route1.setArrivalCity(london);
-        route1.setBasePrice(new BigDecimal("499.99"));
-        route1.setAverageDuration(420); // 7 hours
-        route1.setDistance(5567);
-        routeRepository.save(route1);
+        // Создаем больше маршрутов для разнообразия
+        List<RouteEntity> routes = Arrays.asList(
+                createRoute(newYork, london, new BigDecimal("499.99"), 420, 5567),
+                createRoute(newYork, paris, new BigDecimal("459.99"), 435, 5834),
+                createRoute(london, tokyo, new BigDecimal("899.99"), 720, 9560),
+                createRoute(paris, dubai, new BigDecimal("699.99"), 390, 5167),
+                createRoute(tokyo, sydney, new BigDecimal("799.99"), 585, 7821),
+                createRoute(dubai, singapore, new BigDecimal("549.99"), 465, 5846),
+                createRoute(moscow, dubai, new BigDecimal("399.99"), 300, 3724),
+                createRoute(losAngeles, tokyo, new BigDecimal("849.99"), 600, 8800),
+                createRoute(chicago, london, new BigDecimal("529.99"), 450, 6400),
+                createRoute(toronto, frankfurt, new BigDecimal("629.99"), 480, 6200),
+                createRoute(beijing, singapore, new BigDecimal("429.99"), 360, 4400),
+                createRoute(frankfurt, istanbul, new BigDecimal("329.99"), 180, 2200),
+                createRoute(sydney, losAngeles, new BigDecimal("1199.99"), 840, 12000),
+                createRoute(istanbul, dubai, new BigDecimal("349.99"), 240, 3100),
+                createRoute(paris, frankfurt, new BigDecimal("199.99"), 90, 450)
+        );
 
-        RouteEntity route2 = new RouteEntity();
-        route2.setDepartureCity(newYork);
-        route2.setArrivalCity(paris);
-        route2.setBasePrice(new BigDecimal("459.99"));
-        route2.setAverageDuration(435); // 7 hours 15 min
-        route2.setDistance(5834);
-        routeRepository.save(route2);
+        routeRepository.saveAll(routes);
+    }
 
-        RouteEntity route3 = new RouteEntity();
-        route3.setDepartureCity(london);
-        route3.setArrivalCity(tokyo);
-        route3.setBasePrice(new BigDecimal("899.99"));
-        route3.setAverageDuration(720); // 12 hours
-        route3.setDistance(9560);
-        routeRepository.save(route3);
-
-        RouteEntity route4 = new RouteEntity();
-        route4.setDepartureCity(paris);
-        route4.setArrivalCity(dubai);
-        route4.setBasePrice(new BigDecimal("699.99"));
-        route4.setAverageDuration(390); // 6 hours 30 min
-        route4.setDistance(5167);
-        routeRepository.save(route4);
-
-        RouteEntity route5 = new RouteEntity();
-        route5.setDepartureCity(tokyo);
-        route5.setArrivalCity(sydney);
-        route5.setBasePrice(new BigDecimal("799.99"));
-        route5.setAverageDuration(585); // 9 hours 45 min
-        route5.setDistance(7821);
-        routeRepository.save(route5);
-
-        RouteEntity route6 = new RouteEntity();
-        route6.setDepartureCity(dubai);
-        route6.setArrivalCity(singapore);
-        route6.setBasePrice(new BigDecimal("549.99"));
-        route6.setAverageDuration(465); // 7 hours 45 min
-        route6.setDistance(5846);
-        routeRepository.save(route6);
-
-        RouteEntity route7 = new RouteEntity();
-        route7.setDepartureCity(moscow);
-        route7.setArrivalCity(dubai);
-        route7.setBasePrice(new BigDecimal("399.99"));
-        route7.setAverageDuration(300); // 5 hours
-        route7.setDistance(3724);
-        routeRepository.save(route7);
+    private RouteEntity createRoute(CityEntity departure, CityEntity arrival, BigDecimal price, int duration, int distance) {
+        RouteEntity route = new RouteEntity();
+        route.setDepartureCity(departure);
+        route.setArrivalCity(arrival);
+        route.setBasePrice(price);
+        route.setAverageDuration(duration);
+        route.setDistance(distance);
+        return route;
     }
 
     private void createSampleFlights() {
@@ -172,40 +173,43 @@ public class DataInitializer {
         List<AirlineEntity> airlines = airlineService.getAllAirlines();
         List<RouteEntity> routes = routeRepository.findAll();
 
-        AirlineEntity mainAirline = airlines.stream()
-                .filter(a -> a.getCode().equals("AR"))
-                .findFirst().get();
+        List<FlightEntity> flights = new ArrayList<>();
 
-        List<FlightEntity> flights = Arrays.asList(
-                createFlight("AR101", routes.get(0), aircrafts.get(1), mainAirline,
-                        LocalDateTime.now().plusDays(1).withHour(8).withMinute(0),
-                        LocalDateTime.now().plusDays(1).withHour(20).withMinute(0)),
+        // Создаем 20 рейсов с разными авиакомпаниями
+        for (int i = 1; i <= 20; i++) {
+            AirlineEntity airline = getRandomAirline(airlines);
+            RouteEntity route = routes.get(random.nextInt(routes.size()));
+            AircraftEntity aircraft = aircrafts.get(random.nextInt(aircrafts.size()));
 
-                createFlight("AR102", routes.get(1), aircrafts.get(4), mainAirline,
-                        LocalDateTime.now().plusDays(2).withHour(14).withMinute(30),
-                        LocalDateTime.now().plusDays(2).withHour(23).withMinute(45)),
+            String flightNumber = generateFlightNumber(airline, i);
 
-                createFlight("AR201", routes.get(2), aircrafts.get(2), mainAirline,
-                        LocalDateTime.now().plusDays(3).withHour(10).withMinute(0),
-                        LocalDateTime.now().plusDays(3).withHour(18).withMinute(0)),
+            LocalDateTime departureTime = generateRandomDepartureTime(i);
+            LocalDateTime arrivalTime = departureTime.plusMinutes(route.getAverageDuration());
 
-                createFlight("AR202", routes.get(3), aircrafts.get(5), mainAirline,
-                        LocalDateTime.now().plusDays(1).withHour(16).withMinute(15),
-                        LocalDateTime.now().plusDays(1).withHour(23).withMinute(30)),
-
-                createFlight("AR301", routes.get(4), aircrafts.get(3), mainAirline,
-                        LocalDateTime.now().plusDays(4).withHour(9).withMinute(30),
-                        LocalDateTime.now().plusDays(4).withHour(22).withMinute(45)),
-
-                createFlight("AR302", routes.get(5), aircrafts.get(0), mainAirline,
-                        LocalDateTime.now().plusDays(2).withHour(11).withMinute(0),
-                        LocalDateTime.now().plusDays(2).withHour(19).withMinute(30))
-        );
+            FlightEntity flight = createFlight(flightNumber, route, aircraft, airline, departureTime, arrivalTime);
+            flights.add(flight);
+        }
 
         for (FlightEntity flight : flights) {
             FlightEntity savedFlight = flightRepository.save(flight);
             createSeatsForFlight(savedFlight);
         }
+    }
+
+    private AirlineEntity getRandomAirline(List<AirlineEntity> airlines) {
+        return airlines.get(random.nextInt(airlines.size()));
+    }
+
+    private String generateFlightNumber(AirlineEntity airline, int index) {
+        String airlineCode = airline.getCode();
+        int flightNum = 100 + (index * 10) + random.nextInt(50);
+        return airlineCode + flightNum;
+    }
+
+    private LocalDateTime generateRandomDepartureTime(int dayOffset) {
+        int hour = 6 + random.nextInt(14); // между 6:00 и 20:00
+        int minute = random.nextInt(4) * 15; // 0, 15, 30, 45 минут
+        return LocalDateTime.now().plusDays(dayOffset).withHour(hour).withMinute(minute);
     }
 
     private FlightEntity createFlight(String flightNumber, RouteEntity route, AircraftEntity aircraft,
@@ -217,7 +221,13 @@ public class DataInitializer {
         flight.setAirline(airline);
         flight.setDepartureTime(departureTime);
         flight.setArrivalTime(arrivalTime);
-        flight.setPrice(route.getBasePrice()); // Используем базовую цену из маршрута
+
+        // Добавляем случайное отклонение к базовой цене (±20%)
+        BigDecimal basePrice = route.getBasePrice();
+        double variation = 0.8 + (random.nextDouble() * 0.4); // от 0.8 до 1.2
+        BigDecimal finalPrice = basePrice.multiply(BigDecimal.valueOf(variation));
+        flight.setPrice(finalPrice);
+
         flight.setStatus(com.bogdan.aeroreserve.enums.FlightStatus.SCHEDULED);
         return flight;
     }

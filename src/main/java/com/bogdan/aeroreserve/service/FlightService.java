@@ -5,6 +5,8 @@ import com.bogdan.aeroreserve.enums.FlightStatus;
 import com.bogdan.aeroreserve.repository.FlightRepository;
 import com.bogdan.aeroreserve.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -46,8 +48,20 @@ public class FlightService {
                 from, to, start, end);
     }
 
-    public List<FlightEntity> getAllFlights() {
-        return flightRepository.findAll();
+    public Page<FlightEntity> getAllFlights(Pageable pageable) {
+        return flightRepository.findAll(pageable);
+    }
+
+    public Page<FlightEntity> searchFlights(String from, String to, LocalDate date, Pageable pageable) {
+        // Если параметры поиска пустые, возвращаем все рейсы
+        if ((from == null || from.trim().isEmpty()) &&
+                (to == null || to.trim().isEmpty()) &&
+                date == null) {
+            return flightRepository.findAll(pageable);
+        }
+
+        // Иначе ищем по критериям
+        return flightRepository.findBySearchCriteria(from, to, date, pageable);
     }
 
     public Optional<FlightEntity> getFlightById(Long id) {

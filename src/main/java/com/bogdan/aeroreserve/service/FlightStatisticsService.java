@@ -6,7 +6,11 @@ import com.bogdan.aeroreserve.entity.FlightStatisticsEntity;
 import com.bogdan.aeroreserve.enums.BookingStatus;
 import com.bogdan.aeroreserve.repository.FlightStatisticsRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
@@ -57,21 +61,13 @@ public class FlightStatisticsService {
     }
 
     public void initializeStatisticsForAllFlights() {
-        List<FlightEntity> flights = flightService.getAllFlights();
+        Pageable pageable = PageRequest.of(0, 1000);
+        Page<FlightEntity> flightsPage = flightService.getAllFlights(pageable);
+        List<FlightEntity> flights = flightsPage.getContent();
+
         for (FlightEntity flight : flights) {
-            if (statisticsRepository.findByFlightId(flight.getId()).isEmpty()) {
-                FlightStatisticsEntity stats = new FlightStatisticsEntity(flight);
-
-                // Генерируем случайные данные для демонстрации
-                stats.setTotalBookings((int) (Math.random() * flight.getAircraft().getTotalSeats()));
-                stats.setTotalPassengers((int) (stats.getTotalBookings() * 0.8));
-                stats.setAverageDelayMinutes(Math.random() * 30);
-                stats.setOnTimePerformance(85 + Math.random() * 15);
-                stats.setCustomerSatisfactionScore(7 + Math.random() * 3);
-                stats.calculateLoadFactor();
-
-                statisticsRepository.save(stats);
-            }
+            getOrCreateStatistics(flight.getId());
         }
     }
+
 }
