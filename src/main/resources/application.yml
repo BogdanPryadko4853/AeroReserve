@@ -30,3 +30,12 @@ logging:
   level:
     com.aeroreserve: DEBUG
     org.springframework.security: DEBUG
+
+# Stripe Configuration
+stripe:
+  secret-key: ${SECRET_STRIPE}
+  public-key: ${PUBLIC_STRIPE}
+  currency: ${CURRENCY}
+  success-url: ${SUCCESS_URL}
+  cancel-url: ${CANCEL_URL}
+  webhook-secret: ${WEBHOOK_SECRET}

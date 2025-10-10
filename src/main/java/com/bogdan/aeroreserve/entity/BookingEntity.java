@@ -4,6 +4,7 @@ import com.bogdan.aeroreserve.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -34,8 +35,15 @@ public class BookingEntity {
     private String passengerName;
     private BigDecimal totalPrice;
 
+    @OneToOne(mappedBy = "booking", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private PaymentEntity payment;
+
     @Enumerated(EnumType.STRING)
-    private BookingStatus status = BookingStatus.CONFIRMED;
+    private BookingStatus status = BookingStatus.PENDING_PAYMENT;
+
+    public boolean isPaid() {
+        return payment != null && "succeeded".equals(payment.getStatus());
+    }
 
     private LocalDateTime bookingDate = LocalDateTime.now();
 

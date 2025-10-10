@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - AeroReserve</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        .payment-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.95);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        #card-element {
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-plane me-2"></i>AeroReserve
+        </a>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="payment-card p-4">
+                <h2 class="text-center mb-4">💳 Complete Your Payment</h2>
+
+                <!-- Booking Summary -->
+                <div class="booking-summary p-3 mb-4" style="background: #f8f9fa; border-radius: 10px;">
+                    <h5>Booking Details</h5>
+                    <p><strong>Flight:</strong> <span th:text="${booking.flight.flightNumber}"></span></p>
+                    <p><strong>Route:</strong> <span th:text="${booking.flight.departureCity} + ' → ' + ${booking.flight.arrivalCity}"></span></p>
+                    <p><strong>Passenger:</strong> <span th:text="${booking.passengerName}"></span></p>
+                    <p><strong>Seat:</strong> <span th:text="${booking.seat.seatNumber}"></span></p>
+                    <h4 class="text-success">Total: $<span th:text="${booking.totalPrice}"></span></h4>
+                </div>
+
+                <!-- Payment Form -->
+                <form id="payment-form">
+                    <div id="card-element">
+                        <!-- Stripe Elements will create form elements here -->
+                    </div>
+
+                    <div id="card-errors" role="alert" class="text-danger mb-3"></div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-3" id="submit-button">
+                        <span id="button-text">Pay $<span th:text="${booking.totalPrice}"></span></span>
+                        <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <a th:href="@{/booking/{id}/cancel(id=${booking.id})}" class="text-muted">Cancel Booking</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const stripePublicKey = 'pk_test_51Rr2ww2UEvzpXWoYYJ8L5Mf1dhqB3jq10jtyucHKXQJHEGmZRBOx51HF7ucl2Ugj5vkSIqJZdvlXMuSYyqW6jU3z005lfJjGyy';
+    const stripe = Stripe(stripePublicKey);
+    const elements = stripe.elements();
+
+    const style = {
+        base: {
+            color: "#32325d",
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: "antialiased",
+            fontSize: "16px",
+            "::placeholder": {
+                color: "#aab7c4"
+            }
+        },
+        invalid: {
+            color: "#fa755a",
+            iconColor: "#fa755a"
+        }
+    };
+
+    const card = elements.create("card", { style: style });
+    card.mount("#card-element");
+
+    card.on('change', ({error}) => {
+        const displayError = document.getElementById('card-errors');
+        if (error) {
+            displayError.textContent = error.message;
+        } else {
+            displayError.textContent = '';
+        }
+    });
+
+    const form = document.getElementById('payment-form');
+    const submitButton = document.getElementById('submit-button');
+    const buttonText = document.getElementById('button-text');
+    const spinner = document.getElementById('spinner');
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        // Показываем спиннер
+        buttonText.classList.add('d-none');
+        spinner.classList.remove('d-none');
+        submitButton.disabled = true;
+
+        const {paymentIntent, error} = await stripe.confirmCardPayment(
+            '[[${payment.clientSecret}]]', {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: '[[${booking.passengerName}]]',
+                        email: '[[${user.email}]]'
+                    }
+                }
+            }
+        );
+
+        if (error) {
+            // Показываем ошибку
+            document.getElementById('card-errors').textContent = error.message;
+            buttonText.classList.remove('d-none');
+            spinner.classList.add('d-none');
+            submitButton.disabled = false;
+        } else if (paymentIntent.status === 'succeeded') {
+            // Перенаправляем на страницу успеха
+            window.location.href = '/payment/success?payment_intent=' + paymentIntent.id;
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

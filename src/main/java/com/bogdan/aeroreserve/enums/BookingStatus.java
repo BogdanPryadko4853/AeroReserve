@@ -1,5 +1,10 @@
 package com.bogdan.aeroreserve.enums;
 
+
 public enum BookingStatus {
-    CONFIRMED, CANCELLED, COMPLETED
+    PENDING_PAYMENT,
+    CONFIRMED,
+    CANCELLED,
+    REFUNDED,
+    COMPLETED
 }

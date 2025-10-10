@@ -50,7 +50,9 @@ public class BookingController {
                     .orElseThrow(() -> new RuntimeException("User not found"));
 
             var booking = bookingService.createBooking(user, flightId, seatNumber, passengerName);
-            return "redirect:/dashboard?booked=" + booking.getBookingNumber();
+
+            // ВАЖНО: Перенаправляем на страницу оплаты, а не на dashboard
+            return "redirect:/booking/" + booking.getId() + "/payment";
 
         } catch (Exception e) {
             UserEntity user = userService.findByEmail(userDetails.getUsername())
@@ -63,6 +65,34 @@ public class BookingController {
             model.addAttribute("seatNumber", seatNumber);
             return "booking-form";
         }
+    }
+
+    @GetMapping("/booking/{bookingId}/payment")
+    public String paymentPage(@PathVariable Long bookingId,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              Model model) {
+        UserEntity user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        var booking = bookingService.getBookingById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Проверяем, что бронирование принадлежит пользователю
+        if (!booking.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied");
+        }
+
+        // Проверяем, что бронирование еще не оплачено
+        if (booking.isPaid()) {
+            return "redirect:/dashboard?alreadyPaid=true";
+        }
+
+        model.addAttribute("user", user);
+        model.addAttribute("booking", booking);
+        model.addAttribute("payment", booking.getPayment());
+        model.addAttribute("stripePublicKey", "pk_test_TYooMQauvdEDq54NiTphI7jx"); // Тестовый ключ
+
+        return "payment-page";
     }
 
     @PostMapping("/booking/{id}/cancel")
