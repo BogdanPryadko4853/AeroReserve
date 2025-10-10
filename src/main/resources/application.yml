@@ -1,6 +1,27 @@
 spring:
   application:
     name: AeroReserve
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+  # Email templates
+  app:
+    email:
+      from: no-reply@aeroreserve.com
+      company-name: AeroReserve
+
 
   datasource:
     url: ${DB_URL}

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Ticket</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px 10px 0 0;
+        }
+        .ticket {
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            margin: 20px 0;
+            background: white;
+        }
+        .flight-info {
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .city {
+            text-align: center;
+        }
+        .city-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .detail-item {
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .barcode {
+            text-align: center;
+            padding: 20px;
+            background: #f5f5f5;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 3px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 0 0 10px 10px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>🎫 AeroReserve</h1>
+    <p>Your Flight Booking Confirmation</p>
+</div>
+
+<div class="ticket">
+    <div style="padding: 20px; text-align: center; background: #e8f5e8;">
+        <h2 style="color: #2e7d32; margin: 0;">BOOKING CONFIRMED</h2>
+        <p style="margin: 5px 0; font-size: 18px;">
+            <strong th:text="${booking.bookingNumber}"></strong>
+        </p>
+    </div>
+
+    <div class="flight-info">
+        <div class="route">
+            <div class="city">
+                <div class="city-name" th:text="${flight.departureCity}"></div>
+                <div th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy')}"></div>
+                <div style="font-size: 24px; font-weight: bold;"
+                     th:text="${#temporals.format(flight.departureTime, 'HH:mm')}"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <div style="font-size: 24px;">➝</div>
+                <div th:text="${flight.flightNumber}"></div>
+                <div th:text="${flight.airline?.name ?: 'AeroReserve'}"></div>
+            </div>
+
+            <div class="city">
+                <div class="city-name" th:text="${flight.arrivalCity}"></div>
+                <div th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, yyyy')}"></div>
+                <div style="font-size: 24px; font-weight: bold;"
+                     th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+            </div>
+        </div>
+    </div>
+
+    <div style="padding: 20px;">
+        <div class="details-grid">
+            <div class="detail-item">
+                <strong>Passenger</strong><br>
+                <span th:text="${booking.passengerName}"></span>
+            </div>
+            <div class="detail-item">
+                <strong>Seat</strong><br>
+                <span th:text="${seat.seatNumber}"></span> (<span th:text="${seat.seatClass}"></span>)
+            </div>
+            <div class="detail-item">
+                <strong>Aircraft</strong><br>
+                <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
+            </div>
+            <div class="detail-item">
+                <strong>Total Paid</strong><br>
+                <span style="color: #2e7d32; font-weight: bold;"
+                      th:text="'$' + ${booking.totalPrice}"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="barcode">
+        <div>BOARDING PASS</div>
+        <div style="font-size: 18px; margin: 10px 0;"
+             th:text="${booking.bookingNumber}"></div>
+        <div>✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️</div>
+    </div>
+</div>
+
+<div class="footer">
+    <p>Thank you for choosing AeroReserve!</p>
+    <p>
+        Need help? Contact us at support@aeroreserve.com<br>
+        or call +1 (555) 123-4567
+    </p>
+    <p>
+        <small>
+            This is an automated message. Please do not reply to this email.<br>
+            Booking date: <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy HH:mm')}"></span>
+        </small>
+    </p>
+</div>
+</body>
+</html>

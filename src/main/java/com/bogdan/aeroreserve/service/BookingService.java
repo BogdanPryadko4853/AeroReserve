@@ -21,7 +21,7 @@ public class BookingService {
     private final FlightRepository flightRepository;
     private final StripePaymentService stripePaymentService;
     private final PaymentRepository paymentRepository;
-
+    private final EmailService emailService;
     /**
      * Создание бронирования с инициализацией платежа
      */
@@ -61,6 +61,13 @@ public class BookingService {
 
         if (booking.isPaid()) {
             booking.setStatus(BookingStatus.CONFIRMED);
+
+            try {
+                emailService.sendBookingConfirmation(booking);
+            } catch (Exception e) {
+
+                System.err.println("Failed to send confirmation email: " + e.getMessage());
+            }
             return bookingRepository.save(booking);
         }
 
@@ -112,6 +119,12 @@ public class BookingService {
         // Освобождаем место
         booking.getSeat().setAvailable(true);
         seatRepository.save(booking.getSeat());
+
+        try {
+            emailService.sendRefundNotification(booking);
+        } catch (Exception e) {
+            System.err.println("Failed to send refund notification: " + e.getMessage());
+        }
 
         return bookingRepository.save(booking);
     }
@@ -172,5 +185,11 @@ public class BookingService {
         // Обновляем статус бронирования
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
+
+        try {
+            emailService.sendCancellationNotification(booking);
+        } catch (Exception e) {
+            System.err.println("Failed to send cancellation notification: " + e.getMessage());
+        }
     }
 }
