@@ -97,6 +97,6 @@ public class HomeController {
         model.addAttribute("flight", flightService.getFlightById(id)
                 .orElseThrow(() -> new RuntimeException("Flight not found")));
         model.addAttribute("availableSeats", flightService.getAvailableSeats(id));
-        return "flight-details";
+        return "flight/flight-details";
     }
 }

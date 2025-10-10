@@ -35,7 +35,7 @@ public class StatisticsController {
                 .orElseThrow(() -> new RuntimeException("User not found"));
         model.addAttribute("stats", statisticsService.getOrCreateStatistics(flightId));
         model.addAttribute("user", user);
-        return "flight-statistics";
+        return "flight/flight-statistics";
     }
 
     @GetMapping("/statistics/refresh")
