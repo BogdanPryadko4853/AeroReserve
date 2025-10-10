@@ -1,5 +1,6 @@
 package com.bogdan.aeroreserve.controller;
 
+import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.UserEntity;
 import com.bogdan.aeroreserve.service.BookingService;
 import com.bogdan.aeroreserve.service.FlightService;
@@ -100,4 +101,82 @@ public class BookingController {
         bookingService.cancelBooking(id);
         return "redirect:/dashboard?cancelled=true";
     }
+
+    @PostMapping("/booking/{id}/refund")
+    public String refundBooking(@PathVariable Long id,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                Model model) {
+        try {
+            UserEntity user = userService.findByEmail(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            BookingEntity booking = bookingService.getBookingById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+            // Проверяем, что бронирование принадлежит пользователю
+            if (!booking.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("Access denied");
+            }
+
+            // Выполняем возврат
+            bookingService.refundBooking(id);
+
+            return "redirect:/dashboard?refunded=true";
+
+        } catch (Exception e) {
+            return "redirect:/dashboard?refundError=" + e.getMessage();
+        }
+    }
+
+    @GetMapping("/booking/{id}/refund-confirm")
+    public String refundConfirmPage(@PathVariable Long id,
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    Model model) {
+        UserEntity user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        BookingEntity booking = bookingService.getBookingById(id)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Проверяем, что бронирование принадлежит пользователю
+        if (!booking.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Access denied");
+        }
+
+        // Проверяем возможность возврата
+        boolean canRefund = bookingService.canRefund(booking);
+
+        model.addAttribute("user", user);
+        model.addAttribute("booking", booking);
+        model.addAttribute("canRefund", canRefund);
+
+        return "refund-confirm";
+    }
+    @PostMapping("/booking/{id}/cancel-payment")
+    public String cancelPayment(@PathVariable Long id,
+                                @AuthenticationPrincipal UserDetails userDetails) {
+        try {
+            UserEntity user = userService.findByEmail(userDetails.getUsername())
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            BookingEntity booking = bookingService.getBookingById(id)
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+            // Проверяем, что бронирование принадлежит пользователю
+            if (!booking.getUser().getId().equals(user.getId())) {
+                throw new RuntimeException("Access denied");
+            }
+
+            // Отменяем платеж и бронирование
+            bookingService.cancelPaymentAndBooking(id);
+
+
+            return "redirect:/dashboard?paymentCancelled=true";
+
+        } catch (Exception e) {
+            return "redirect:/dashboard?paymentCancelError=" + e.getMessage();
+        }
+    }
+
+
 }

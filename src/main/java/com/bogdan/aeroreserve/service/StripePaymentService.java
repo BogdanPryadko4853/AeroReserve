@@ -6,13 +6,16 @@ import com.bogdan.aeroreserve.repository.PaymentRepository;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.model.Refund;
 import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.param.RefundCreateParams;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -110,6 +113,48 @@ public class StripePaymentService {
             return paymentIntent.getStatus();
         } catch (StripeException e) {
             throw new RuntimeException("Failed to get payment status: " + e.getMessage(), e);
+        }
+    }
+
+    // В StripePaymentService.java
+    /**
+     * Создание возврата средств
+     */
+    public PaymentEntity createRefund(String paymentIntentId) {
+        try {
+            // Сначала получаем PaymentIntent
+            PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
+
+            // Создаем возврат
+            RefundCreateParams params = RefundCreateParams.builder()
+                    .setPaymentIntent(paymentIntentId)
+                    .build();
+
+            Refund refund = Refund.create(params);
+
+            // Обновляем статус платежа
+            PaymentEntity payment = paymentRepository.findByStripePaymentIntentId(paymentIntentId)
+                    .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+            payment.setStatus("refunded");
+            payment.setUpdatedAt(LocalDateTime.now());
+
+            return paymentRepository.save(payment);
+
+        } catch (StripeException e) {
+            throw new RuntimeException("Failed to create refund: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Проверка возможности возврата
+     */
+    public boolean canRefund(String paymentIntentId) {
+        try {
+            PaymentIntent paymentIntent = PaymentIntent.retrieve(paymentIntentId);
+            return "succeeded".equals(paymentIntent.getStatus());
+        } catch (StripeException e) {
+            return false;
         }
     }
 

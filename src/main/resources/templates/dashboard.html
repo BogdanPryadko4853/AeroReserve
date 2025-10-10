@@ -45,6 +45,17 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
+        .btn-warning {
+            background: linear-gradient(135deg, #f6e05e 0%, #ecc94b 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(246, 224, 94, 0.4);
+        }
         .btn-outline-danger {
             border-radius: 10px;
             font-weight: 600;
@@ -52,6 +63,17 @@
         }
         .btn-outline-danger:hover {
             transform: translateY(-2px);
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
         }
         .status-badge {
             padding: 6px 16px;
@@ -90,6 +112,17 @@
             border-radius: 20px;
             background: rgba(255,255,255,0.95);
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .payment-status {
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -170,6 +203,38 @@
         </div>
     </div>
 
+    <div th:if="${param.refunded}" class="alert alert-success border-0 rounded-3 shadow-sm mb-4">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-money-bill-wave fs-4 me-3"></i>
+            <div>
+                <h5 class="mb-1">💰 Refund Processed!</h5>
+                <p class="mb-0">Your refund has been successfully processed. Funds will be returned within 5-10 business days.</p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${param.refundError}" class="alert alert-danger border-0 rounded-3 shadow-sm mb-4">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-exclamation-circle fs-4 me-3"></i>
+            <div>
+                <h5 class="mb-1">❌ Refund Failed</h5>
+                <p class="mb-0" th:text="${param.refundError}"></p>
+            </div>
+        </div>
+    </div>
+
+    <div th:if="${param.payment}" class="alert alert-info border-0 rounded-3 shadow-sm mb-4">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-credit-card fs-4 me-3"></i>
+            <div>
+                <h5 class="mb-1">💳 Payment Status</h5>
+                <p class="mb-0" th:if="${param.payment == 'success'}">Payment completed successfully!</p>
+                <p class="mb-0" th:if="${param.payment == 'failed'}">Payment failed. Please try again.</p>
+                <p class="mb-0" th:if="${param.payment == 'cancelled'}">Payment was cancelled.</p>
+            </div>
+        </div>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="fw-bold text-dark">Your Flight Bookings</h3>
         <a th:href="@{/}" class="btn btn-primary btn-lg">
@@ -192,39 +257,82 @@
     <!-- Bookings List -->
     <div th:each="booking : ${bookings}" class="booking-card p-4 mb-4">
         <div class="row align-items-center">
+            <!-- Booking Number & Status -->
             <div class="col-md-2">
                 <strong class="text-primary d-block fs-5" th:text="${booking.bookingNumber}"></strong>
-                <span class="status-badge"
-                      th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success text-white' :
-                                    (${booking.status == 'CANCELLED'} ? 'bg-secondary text-white' : 'bg-warning text-dark')"
-                      th:text="${booking.status}"></span>
+                <div class="mt-2">
+                    <span class="status-badge"
+                          th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-success text-white' :
+                    (${booking.status == 'PENDING_PAYMENT'} ? 'bg-warning text-dark' :
+                    (${booking.status == 'REFUNDED'} ? 'bg-secondary text-white' :
+                    (${booking.status == 'CANCELLED'} ? 'bg-danger text-white' : 'bg-info text-white')))"
+                          th:text="${booking.status}"></span>
+                </div>
+                <div th:if="${booking.payment}" class="mt-1">
+                    <small class="payment-status"
+                           th:classappend="${booking.payment.status == 'succeeded'} ? 'bg-success text-white' :
+                     (${booking.payment.status == 'refunded'} ? 'bg-secondary text-white' :
+                     (${booking.payment.status == 'requires_payment_method'} ? 'bg-warning text-dark' : 'bg-danger text-white'))"
+                           th:text="${booking.payment.status}"></small>
+                </div>
             </div>
+
+            <!-- Flight Information -->
             <div class="col-md-3">
                 <div class="fw-bold fs-6" th:text="${booking.flight.departureCity} + ' → ' + ${booking.flight.arrivalCity}"></div>
                 <div class="text-muted small" th:text="${booking.flight.flightNumber}"></div>
                 <small class="text-primary" th:text="${booking.flight.airline?.name ?: 'Unknown Airline'}"></small>
             </div>
+
+            <!-- Departure Time -->
             <div class="col-md-2">
                 <div class="text-muted small">Departure</div>
                 <div class="fw-bold" th:text="${#temporals.format(booking.flight.departureTime, 'MMM dd')}"></div>
                 <div class="text-muted" th:text="${#temporals.format(booking.flight.departureTime, 'HH:mm')}"></div>
             </div>
+
+            <!-- Seat Information -->
             <div class="col-md-2">
                 <div class="text-success fw-bold" th:text="'Seat ' + ${booking.seat.seatNumber}"></div>
                 <div class="text-muted small" th:text="${booking.seat.seatClass}"></div>
             </div>
+
+            <!-- Price & Passenger -->
             <div class="col-md-2">
                 <div class="fw-bold fs-5" th:text="'$' + ${booking.totalPrice}"></div>
                 <div class="text-muted small" th:text="'Passenger: ' + ${booking.passengerName}"></div>
             </div>
+
+
             <div class="col-md-1">
-                <form th:action="@{/booking/{id}/cancel(id=${booking.id})}" method="post"
-                      th:if="${booking.status == 'CONFIRMED'}">
-                    <button type="submit" class="btn btn-outline-danger btn-sm"
-                            onclick="return confirm('Are you sure you want to cancel this booking?')">
-                        Cancel
-                    </button>
-                </form>
+                <div class="action-buttons">
+                    <!-- Pay Button for Pending Payments -->
+                    <a th:if="${booking.status.name() == 'PENDING_PAYMENT'}"
+                       th:href="@{/booking/{id}/payment(id=${booking.id})}"
+                       class="btn btn-success btn-sm">
+                        <i class="fas fa-credit-card me-1"></i>Pay
+                    </a>
+
+                    <!-- Cancel Payment Button for Pending Payments -->
+                    <form th:if="${booking.status.name() == 'PENDING_PAYMENT'}"
+                          th:action="@{/booking/{id}/cancel-payment(id=${booking.id})}"
+                          method="post"
+                          class="mt-1">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100"
+                                onclick="return confirm('Are you sure you want to cancel this payment? The booking will be cancelled and the seat will be released.')">
+                            <i class="fas fa-times me-1"></i>Cancel Payment
+                        </button>
+                    </form>
+
+                    <!-- Refund Button for Confirmed Bookings -->
+                    <a th:if="${booking.status.name() == 'CONFIRMED'}"
+                       th:href="@{/booking/{id}/refund-confirm(id=${booking.id})}"
+                       class="btn btn-warning btn-sm">
+                        <i class="fas fa-undo me-1"></i>Refund
+                    </a>
+
+
+                </div>
             </div>
         </div>
 
@@ -244,13 +352,27 @@
                     <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy')}"></span>
                 </div>
                 <div class="col-md-3">
-                    <strong>Duration:</strong>
+                    <strong>Flight Duration:</strong>
                     <span th:text="${#temporals.format(booking.flight.arrivalTime, 'HH:mm')}"></span>
+                </div>
+            </div>
+
+            <!-- Payment Information -->
+            <div th:if="${booking.payment}" class="row mt-2 pt-2 border-top">
+                <div class="col-md-6">
+                    <strong>Payment ID:</strong>
+                    <span class="text-muted" th:text="${booking.payment.stripePaymentIntentId}"></span>
+                </div>
+                <div class="col-md-6">
+                    <strong>Last Updated:</strong>
+                    <span class="text-muted" th:text="${#temporals.format(booking.payment.updatedAt, 'MMM dd, HH:mm')}"></span>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

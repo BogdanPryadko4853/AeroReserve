@@ -87,6 +87,45 @@ public class BookingService {
         bookingRepository.save(booking);
     }
 
+    public BookingEntity refundBooking(Long bookingId) {
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Проверяем, что бронирование оплачено
+        if (!booking.isPaid()) {
+            throw new RuntimeException("Cannot refund unpaid booking");
+        }
+
+        // Проверяем, что есть платеж
+        if (booking.getPayment() == null) {
+            throw new RuntimeException("No payment found for this booking");
+        }
+
+        // Создаем возврат в Stripe
+        PaymentEntity refundedPayment = stripePaymentService.createRefund(
+                booking.getPayment().getStripePaymentIntentId()
+        );
+
+        // Обновляем статус бронирования
+        booking.setStatus(BookingStatus.REFUNDED);
+
+        // Освобождаем место
+        booking.getSeat().setAvailable(true);
+        seatRepository.save(booking.getSeat());
+
+        return bookingRepository.save(booking);
+    }
+
+    /**
+     * Проверка возможности возврата
+     */
+    public boolean canRefund(BookingEntity booking) {
+        return booking.isPaid() &&
+                booking.getPayment() != null &&
+                stripePaymentService.canRefund(booking.getPayment().getStripePaymentIntentId()) &&
+                booking.getStatus() != BookingStatus.REFUNDED;
+    }
+
     public Optional<BookingEntity> getBookingById(Long bookingId) {
         return bookingRepository.findById(bookingId);
     }
@@ -102,5 +141,36 @@ public class BookingService {
     public List<BookingEntity> getUserBookings(UserEntity user) {
 
         return bookingRepository.findByUser(user);
+    }
+
+    public void cancelPaymentAndBooking(Long bookingId) {
+        BookingEntity booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        // Проверяем, что бронирование ожидает оплаты
+        if (booking.getStatus() != BookingStatus.PENDING_PAYMENT) {
+            throw new RuntimeException("Cannot cancel payment for booking that is not pending payment");
+        }
+
+        // Если есть платеж в Stripe, отменяем его
+        if (booking.getPayment() != null &&
+                !"succeeded".equals(booking.getPayment().getStatus()) &&
+                !"canceled".equals(booking.getPayment().getStatus())) {
+
+            try {
+                stripePaymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
+            } catch (Exception e) {
+                // Логируем ошибку, но продолжаем отмену бронирования
+                System.err.println("Failed to cancel Stripe payment: " + e.getMessage());
+            }
+        }
+
+        // Освобождаем место
+        booking.getSeat().setAvailable(true);
+        seatRepository.save(booking.getSeat());
+
+        // Обновляем статус бронирования
+        booking.setStatus(BookingStatus.CANCELLED);
+        bookingRepository.save(booking);
     }
 }
