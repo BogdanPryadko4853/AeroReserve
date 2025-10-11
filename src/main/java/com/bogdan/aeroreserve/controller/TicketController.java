@@ -2,9 +2,9 @@ package com.bogdan.aeroreserve.controller;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.UserEntity;
-import com.bogdan.aeroreserve.service.BookingService;
-import com.bogdan.aeroreserve.service.PdfTicketService;
-import com.bogdan.aeroreserve.service.UserService;
+import com.bogdan.aeroreserve.service.core.BookingService;
+import com.bogdan.aeroreserve.service.notification.PdfTicketService;
+import com.bogdan.aeroreserve.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;

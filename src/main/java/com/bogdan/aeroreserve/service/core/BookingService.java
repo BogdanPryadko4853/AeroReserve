@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.core;
 
 import com.bogdan.aeroreserve.entity.*;
 import com.bogdan.aeroreserve.enums.BookingStatus;
@@ -6,6 +6,8 @@ import com.bogdan.aeroreserve.repository.BookingRepository;
 import com.bogdan.aeroreserve.repository.FlightRepository;
 import com.bogdan.aeroreserve.repository.PaymentRepository;
 import com.bogdan.aeroreserve.repository.SeatRepository;
+import com.bogdan.aeroreserve.service.notification.EmailService;
+import com.bogdan.aeroreserve.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +21,7 @@ public class BookingService {
     private final BookingRepository bookingRepository;
     private final SeatRepository seatRepository;
     private final FlightRepository flightRepository;
-    private final StripePaymentService stripePaymentService;
-    private final PaymentRepository paymentRepository;
+    private final PaymentService paymentService;
     private final EmailService emailService;
     private final TicketService ticketService;
 
@@ -48,8 +49,7 @@ public class BookingService {
         booking.setStatus(BookingStatus.PENDING_PAYMENT);
         booking = bookingRepository.save(booking);
 
-        // Создаем платежное намерение в Stripe
-        PaymentEntity payment = stripePaymentService.createPaymentIntent(booking);
+        PaymentEntity payment = paymentService.createPaymentIntent(booking);
         booking.setPayment(payment);
 
         return bookingRepository.save(booking);
@@ -67,7 +67,6 @@ public class BookingService {
             booking.setStatus(BookingStatus.CONFIRMED);
             booking = bookingRepository.save(booking);
 
-            // СОЗДАЕМ БИЛЕТ после подтверждения оплаты
             TicketEntity ticket = ticketService.createTicket(booking);
 
             try {
@@ -101,17 +100,13 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Если есть платеж, отменяем его
         if (booking.getPayment() != null && !"succeeded".equals(booking.getPayment().getStatus())) {
-            stripePaymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
+            paymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
         }
-
-        // ОТМЕНЯЕМ БИЛЕТ если он был создан
         ticketService.getTicketByBooking(booking).ifPresent(ticket -> {
             ticketService.cancelTicket(booking);
         });
 
-        // Освобождаем место
         booking.getSeat().setAvailable(true);
         seatRepository.save(booking.getSeat());
 
@@ -133,30 +128,24 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Проверяем, что бронирование оплачено
         if (!booking.isPaid()) {
             throw new RuntimeException("Cannot refund unpaid booking");
         }
 
-        // Проверяем, что есть платеж
         if (booking.getPayment() == null) {
             throw new RuntimeException("No payment found for this booking");
         }
 
-        // Создаем возврат в Stripe
-        PaymentEntity refundedPayment = stripePaymentService.createRefund(
+        PaymentEntity refundedPayment = paymentService.createRefund(
                 booking.getPayment().getStripePaymentIntentId()
         );
 
-        // ОТМЕНЯЕМ БИЛЕТ при возврате
         ticketService.getTicketByBooking(booking).ifPresent(ticket -> {
             ticketService.cancelTicket(booking);
         });
 
-        // Обновляем статус бронирования
         booking.setStatus(BookingStatus.REFUNDED);
 
-        // Освобождаем место
         booking.getSeat().setAvailable(true);
         seatRepository.save(booking.getSeat());
 
@@ -175,7 +164,7 @@ public class BookingService {
     public boolean canRefund(BookingEntity booking) {
         return booking.isPaid() &&
                 booking.getPayment() != null &&
-                stripePaymentService.canRefund(booking.getPayment().getStripePaymentIntentId()) &&
+                paymentService.canRefund(booking.getPayment().getStripePaymentIntentId()) &&
                 booking.getStatus() != BookingStatus.REFUNDED;
     }
 
@@ -203,29 +192,23 @@ public class BookingService {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-        // Проверяем, что бронирование ожидает оплаты
         if (booking.getStatus() != BookingStatus.PENDING_PAYMENT) {
             throw new RuntimeException("Cannot cancel payment for booking that is not pending payment");
         }
 
-        // Если есть платеж в Stripe, отменяем его
         if (booking.getPayment() != null &&
                 !"succeeded".equals(booking.getPayment().getStatus()) &&
                 !"canceled".equals(booking.getPayment().getStatus())) {
 
             try {
-                stripePaymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
+                paymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
             } catch (Exception e) {
-                // Логируем ошибку, но продолжаем отмену бронирования
                 System.err.println("Failed to cancel Stripe payment: " + e.getMessage());
             }
         }
 
-        // Освобождаем место
         booking.getSeat().setAvailable(true);
         seatRepository.save(booking.getSeat());
-
-        // Обновляем статус бронирования
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
 

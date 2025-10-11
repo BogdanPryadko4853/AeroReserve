@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.notification;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;

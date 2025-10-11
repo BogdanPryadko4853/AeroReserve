@@ -1,8 +1,8 @@
 package com.bogdan.aeroreserve.controller;
 
 import com.bogdan.aeroreserve.entity.UserEntity;
-import com.bogdan.aeroreserve.service.BookingService;
-import com.bogdan.aeroreserve.service.UserService;
+import com.bogdan.aeroreserve.service.core.BookingService;
+import com.bogdan.aeroreserve.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

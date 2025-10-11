@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.core;
 
 import com.bogdan.aeroreserve.entity.*;
 import com.bogdan.aeroreserve.enums.FlightStatus;

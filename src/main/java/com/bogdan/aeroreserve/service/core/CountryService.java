@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.core;
 
 import com.bogdan.aeroreserve.entity.CountryEntity;
 import com.bogdan.aeroreserve.repository.CountryRepository;

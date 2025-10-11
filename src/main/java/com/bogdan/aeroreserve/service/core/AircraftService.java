@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.core;
 
 import com.bogdan.aeroreserve.entity.AircraftEntity;
 import com.bogdan.aeroreserve.repository.AircraftRepository;

@@ -1,4 +1,4 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.payment;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.PaymentEntity;
@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class StripePaymentService {
+public class StripePaymentService implements PaymentService {
 
     @Value("${stripe.secret-key}")
     private String stripeSecretKey;

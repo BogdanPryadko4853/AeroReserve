@@ -1,8 +1,9 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.core;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
 import com.bogdan.aeroreserve.repository.TicketRepository;
+import com.bogdan.aeroreserve.service.notification.PdfTicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

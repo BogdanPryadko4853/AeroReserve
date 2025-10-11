@@ -3,9 +3,9 @@ package com.bogdan.aeroreserve.controller;
 import com.bogdan.aeroreserve.dto.PaymentResponseDTO;
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.UserEntity;
-import com.bogdan.aeroreserve.service.BookingService;
-import com.bogdan.aeroreserve.service.StripePaymentService;
-import com.bogdan.aeroreserve.service.UserService;
+import com.bogdan.aeroreserve.service.core.BookingService;
+import com.bogdan.aeroreserve.service.payment.PaymentService;
+import com.bogdan.aeroreserve.service.core.UserService;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Event;
 import com.stripe.model.PaymentIntent;
@@ -28,10 +28,9 @@ public class PaymentController {
     @Value("${stripe.webhook-secret}")
     private String webhookSecret;
 
-    private final StripePaymentService stripePaymentService;
+    private final PaymentService paymentService;
     private final BookingService bookingService;
     private final UserService userService;
-
 
 
     /**
@@ -44,7 +43,7 @@ public class PaymentController {
             BookingEntity booking = bookingService.getBookingById(bookingId)
                     .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-            var payment = stripePaymentService.createPaymentIntent(booking);
+            var payment = paymentService.createPaymentIntent(booking);
 
             PaymentResponseDTO response = new PaymentResponseDTO(
                     payment.getClientSecret(),
@@ -76,7 +75,7 @@ public class PaymentController {
 
             if (paymentIntentId != null) {
                 // Подтверждаем платеж
-                var payment = stripePaymentService.confirmPayment(paymentIntentId);
+                var payment = paymentService.confirmPayment(paymentIntentId);
 
                 // Подтверждаем бронирование
                 bookingService.confirmBooking(payment.getBooking().getId());
@@ -147,8 +146,7 @@ public class PaymentController {
         PaymentIntent paymentIntent = (PaymentIntent) event.getData().getObject();
         String paymentIntentId = paymentIntent.getId();
 
-        // Обновляем статус платежа и подтверждаем бронирование
-        stripePaymentService.confirmPayment(paymentIntentId);
+        paymentService.confirmPayment(paymentIntentId);
 
         Optional<BookingEntity> bookingOpt = bookingService.findByPaymentIntentId(paymentIntentId);
         bookingOpt.ifPresent(booking -> {
@@ -168,7 +166,6 @@ public class PaymentController {
     }
 
     private void handleCheckoutSessionCompleted(Event event) {
-        // Обработка завершения Checkout Session
         System.out.println("Checkout session completed: " + event.getId());
     }
 

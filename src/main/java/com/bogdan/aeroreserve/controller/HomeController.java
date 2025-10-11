@@ -2,8 +2,8 @@ package com.bogdan.aeroreserve.controller;
 
 import com.bogdan.aeroreserve.entity.FlightEntity;
 import com.bogdan.aeroreserve.entity.UserEntity;
-import com.bogdan.aeroreserve.service.FlightService;
-import com.bogdan.aeroreserve.service.UserService;
+import com.bogdan.aeroreserve.service.core.FlightService;
+import com.bogdan.aeroreserve.service.core.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

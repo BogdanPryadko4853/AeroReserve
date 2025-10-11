@@ -1,7 +1,8 @@
-package com.bogdan.aeroreserve.service;
+package com.bogdan.aeroreserve.service.notification;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
+import com.bogdan.aeroreserve.service.core.TicketService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
