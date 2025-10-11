@@ -14,7 +14,7 @@ public class SeatEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
     private FlightEntity flight;
 
@@ -25,8 +25,7 @@ public class SeatEntity {
 
     private boolean available = true;
 
-    @OneToOne
-    @JoinColumn(name = "seat_id")
+    @OneToOne(mappedBy = "seat", fetch = FetchType.LAZY)
     private BookingEntity booking;
 
     public SeatEntity(FlightEntity flight, String seatNumber, SeatClass seatClass) {
@@ -35,4 +34,3 @@ public class SeatEntity {
         this.seatClass = seatClass;
     }
 }
-

@@ -261,7 +261,7 @@
             </div>
         </div>
 
-        <div th:if="${flights != null and !flights.empty}">
+        <div th:if="${flights != null and !flights.isEmpty()}">
             <div th:each="flight : ${flights}" class="flight-card p-4 mb-4 bg-white">
                 <div class="row align-items-center">
                     <div class="col-md-2">

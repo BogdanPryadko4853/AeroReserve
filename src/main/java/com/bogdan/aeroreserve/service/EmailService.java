@@ -4,7 +4,6 @@ import com.bogdan.aeroreserve.entity.BookingEntity;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -35,21 +34,18 @@ public class EmailService {
             helper.setSubject("🎫 Your Flight Ticket - Booking #" + booking.getBookingNumber());
             helper.setFrom("no-reply@aeroreserve.com", "AeroReserve");
 
-            // Подготовка данных для шаблона
             Map<String, Object> variables = new HashMap<>();
             variables.put("booking", booking);
             variables.put("user", booking.getUser());
             variables.put("flight", booking.getFlight());
             variables.put("seat", booking.getSeat());
 
-            // Создание HTML контента из шаблона
             Context context = new Context();
             context.setVariables(variables);
             String htmlContent = templateEngine.process("booking-confirmation", context);
 
             helper.setText(htmlContent, true);
 
-            // Отправка email
             mailSender.send(message);
 
         } catch (MessagingException e) {

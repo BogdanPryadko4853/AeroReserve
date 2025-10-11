@@ -243,7 +243,7 @@
     </div>
 
     <!-- Empty State -->
-    <div th:if="${bookings.empty}" class="empty-state text-center py-5">
+    <div th:if="${bookings.isEmpty()}" class="empty-state text-center py-5">
         <div class="py-5">
             <i class="fas fa-ticket-alt text-muted fs-1 mb-3"></i>
             <h4 class="text-dark mb-3">No bookings yet</h4>

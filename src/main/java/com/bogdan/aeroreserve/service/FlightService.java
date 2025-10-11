@@ -23,6 +23,8 @@ public class FlightService {
     private final RouteService routeService;
     private final CityService cityService;
 
+
+
     public List<FlightEntity> searchFlights(String from, String to, LocalDate date) {
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay();
@@ -49,7 +51,7 @@ public class FlightService {
     }
 
     public Page<FlightEntity> getAllFlights(Pageable pageable) {
-        return flightRepository.findAll(pageable);
+        return  flightRepository.findAllWithDetails(pageable);
     }
 
     public Page<FlightEntity> searchFlights(String from, String to, LocalDate date, Pageable pageable) {

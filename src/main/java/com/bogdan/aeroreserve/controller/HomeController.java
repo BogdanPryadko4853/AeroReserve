@@ -37,7 +37,6 @@ public class HomeController {
             model.addAttribute("user", user);
         }
 
-        // Создаем pageable с сортировкой по времени вылета
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
         Page<FlightEntity> flightsPage = flightService.getAllFlights(pageable);
 
@@ -68,7 +67,6 @@ public class HomeController {
 
         LocalDate searchDate = LocalDate.parse(date);
 
-        // Создаем pageable с сортировкой по времени вылета
         Pageable pageable = PageRequest.of(page, size, Sort.by("departureTime").ascending());
         Page<FlightEntity> flightsPage = flightService.searchFlights(from, to, searchDate, pageable);
 

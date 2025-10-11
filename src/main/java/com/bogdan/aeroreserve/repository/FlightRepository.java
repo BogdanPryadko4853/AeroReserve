@@ -21,28 +21,33 @@ public interface FlightRepository extends JpaRepository<FlightEntity, Long> {
     List<FlightEntity> findByRoute_DepartureCity_NameAndRoute_ArrivalCity_NameAndDepartureTimeBetween(
             String departureCity, String arrivalCity, LocalDateTime start, LocalDateTime end);
 
-    // Для поиска с пагинацией
-    @Query("SELECT f FROM FlightEntity f WHERE " +
-            "(:from IS NULL OR f.route.departureCity.name LIKE %:from%) AND " +
-            "(:to IS NULL OR f.route.arrivalCity.name LIKE %:to%) AND " +
-            "(:date IS NULL OR DATE(f.departureTime) = :date)")
+    @Query("""
+        SELECT f FROM FlightEntity f 
+        JOIN f.route r 
+        JOIN r.departureCity dc 
+        JOIN r.arrivalCity ac 
+        WHERE (:from IS NULL OR LOWER(dc.name) LIKE LOWER(CONCAT('%', :from, '%'))) 
+        AND (:to IS NULL OR LOWER(ac.name) LIKE LOWER(CONCAT('%', :to, '%'))) 
+        AND CAST(f.departureTime AS localdate) = :date 
+        ORDER BY f.departureTime ASC
+        """)
     Page<FlightEntity> findBySearchCriteria(
             @Param("from") String from,
             @Param("to") String to,
             @Param("date") LocalDate date,
-            Pageable pageable
-    );
+            Pageable pageable);
 
-    // Старый метод для обратной совместимости
-    @Query("SELECT f FROM FlightEntity f WHERE " +
-            "(:from IS NULL OR f.route.departureCity.name LIKE %:from%) AND " +
-            "(:to IS NULL OR f.route.arrivalCity.name LIKE %:to%) AND " +
-            "(:date IS NULL OR DATE(f.departureTime) = :date)")
-    List<FlightEntity> findBySearchCriteria(
-            @Param("from") String from,
-            @Param("to") String to,
-            @Param("date") LocalDate date
-    );
+        @Query("""
+        SELECT f FROM FlightEntity f 
+        LEFT JOIN FETCH f.route r
+        LEFT JOIN FETCH r.departureCity
+        LEFT JOIN FETCH r.arrivalCity
+        LEFT JOIN FETCH f.aircraft
+        LEFT JOIN FETCH f.airline
+        ORDER BY f.departureTime ASC
+        """)
+        Page<FlightEntity> findAllWithDetails(Pageable pageable);
+
 
     List<FlightEntity> findByRoute_DepartureCity_Name(String departureCity);
     List<FlightEntity> findByRoute_ArrivalCity_Name(String arrivalCity);

@@ -4,7 +4,6 @@ import com.bogdan.aeroreserve.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -20,16 +19,16 @@ public class BookingEntity {
     @Column(unique = true)
     private String bookingNumber;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "flight_id")
     private FlightEntity flight;
 
-    @OneToOne
-    @JoinColumn(name = "booking_id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seat_id")
     private SeatEntity seat;
 
     private String passengerName;
@@ -41,11 +40,11 @@ public class BookingEntity {
     @Enumerated(EnumType.STRING)
     private BookingStatus status = BookingStatus.PENDING_PAYMENT;
 
+    private LocalDateTime bookingDate = LocalDateTime.now();
+
     public boolean isPaid() {
         return payment != null && "succeeded".equals(payment.getStatus());
     }
-
-    private LocalDateTime bookingDate = LocalDateTime.now();
 
     public BookingEntity(UserEntity user, FlightEntity flight, SeatEntity seat, String passengerName) {
         this.bookingNumber = generateBookingNumber();
@@ -60,4 +59,3 @@ public class BookingEntity {
         return "AR" + System.currentTimeMillis();
     }
 }
-

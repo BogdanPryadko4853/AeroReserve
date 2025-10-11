@@ -41,24 +41,16 @@ public class FlightEntity {
     @JoinColumn(name = "airline_id")
     private AirlineEntity airline;
 
-    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SeatEntity> seats = new ArrayList<>();
 
-    public FlightEntity(String flightNumber, String departureCity, String arrivalCity,
-                        LocalDateTime departureTime, LocalDateTime arrivalTime,
-                        BigDecimal price, AircraftEntity aircraft, AirlineEntity airline, RouteEntity route) {
-        this.flightNumber = flightNumber;
-
-        this.departureTime = departureTime;
-        this.arrivalTime = arrivalTime;
-        this.price = price;
-        this.aircraft = aircraft;
-        this.airline = airline;
-        this.route = route;
-    }
-
     public int getAvailableSeats() {
-        return (int) seats.stream().filter(SeatEntity::isAvailable).count();
+        if (seats == null || seats.isEmpty()) {
+            return 0;
+        }
+        return (int) seats.stream()
+                .filter(SeatEntity::isAvailable)
+                .count();
     }
 
     public String getDepartureCity() {
