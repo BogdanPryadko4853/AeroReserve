@@ -3,6 +3,7 @@ package com.bogdan.aeroreserve.service.notification;
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
 import com.bogdan.aeroreserve.service.core.TicketService;
+import com.bogdan.aeroreserve.service.generator.PdfTicketService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class EmailService {
+public class EmailService implements NotificationService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
@@ -53,7 +54,7 @@ public class EmailService {
             helper.setText(htmlContent, true);
 
             // Прикрепляем PDF билета
-            byte[] pdfBytes = pdfTicketService.generateTicketPdfWithTicketInfo(booking, ticket);
+            byte[] pdfBytes = pdfTicketService.generateTicket(booking, ticket);
             helper.addAttachment("ticket-" + ticket.getTicketNumber() + ".pdf",
                     new ByteArrayResource(pdfBytes));
 

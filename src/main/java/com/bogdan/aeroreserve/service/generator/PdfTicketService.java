@@ -1,7 +1,8 @@
-package com.bogdan.aeroreserve.service.notification;
+package com.bogdan.aeroreserve.service.generator;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
+import com.bogdan.aeroreserve.service.core.TicketService;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFont;
@@ -26,15 +27,14 @@ import java.time.format.DateTimeFormatter;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PdfTicketService {
+public class PdfTicketService implements TicketGenerator {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    /**
-     * Основной метод для генерации PDF с информацией о билете
-     */
-    public byte[] generateTicketPdfWithTicketInfo(BookingEntity booking, TicketEntity ticket) {
+
+    @Override
+    public byte[] generateTicket(BookingEntity booking, TicketEntity ticket) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdf = new PdfDocument(writer);
@@ -67,7 +67,7 @@ public class PdfTicketService {
         tempTicket.setTicketNumber("TEMP-" + booking.getBookingNumber());
         tempTicket.setStatus(booking.getStatus().toString());
 
-        return generateTicketPdfWithTicketInfo(booking, tempTicket);
+        return generateTicket(booking, tempTicket);
     }
 
     private void addHeader(Document document, PdfFont boldFont, BookingEntity booking, TicketEntity ticket) {
@@ -239,4 +239,15 @@ public class PdfTicketService {
         long minutes = duration.toMinutesPart();
         return String.format("%dh %dm", hours, minutes);
     }
+
+    @Override
+    public TicketFormat getFormat() {
+        return TicketFormat.PDF;
+    }
+
+    @Override
+    public boolean supports(TicketFormat format) {
+        return TicketFormat.PDF == format;
+    }
+
 }

@@ -4,9 +4,9 @@ import com.bogdan.aeroreserve.entity.*;
 import com.bogdan.aeroreserve.enums.BookingStatus;
 import com.bogdan.aeroreserve.repository.BookingRepository;
 import com.bogdan.aeroreserve.repository.FlightRepository;
-import com.bogdan.aeroreserve.repository.PaymentRepository;
 import com.bogdan.aeroreserve.repository.SeatRepository;
 import com.bogdan.aeroreserve.service.notification.EmailService;
+import com.bogdan.aeroreserve.service.notification.NotificationService;
 import com.bogdan.aeroreserve.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class BookingService {
     private final SeatRepository seatRepository;
     private final FlightRepository flightRepository;
     private final PaymentService paymentService;
-    private final EmailService emailService;
+    private final NotificationService notificationService;
     private final TicketService ticketService;
 
     /**
@@ -70,8 +70,7 @@ public class BookingService {
             TicketEntity ticket = ticketService.createTicket(booking);
 
             try {
-                // Отправляем email с подтверждением и информацией о билете
-                emailService.sendBookingConfirmation(booking, ticket);
+                notificationService.sendBookingConfirmation(booking, ticket);
             } catch (Exception e) {
                 System.err.println("Failed to send confirmation email: " + e.getMessage());
             }
@@ -114,7 +113,7 @@ public class BookingService {
         bookingRepository.save(booking);
 
         try {
-            emailService.sendCancellationNotification(booking);
+            notificationService.sendCancellationNotification(booking);
         } catch (Exception e) {
             System.err.println("Failed to send cancellation notification: " + e.getMessage());
         }
@@ -150,7 +149,7 @@ public class BookingService {
         seatRepository.save(booking.getSeat());
 
         try {
-            emailService.sendRefundNotification(booking);
+            notificationService.sendRefundNotification(booking);
         } catch (Exception e) {
             System.err.println("Failed to send refund notification: " + e.getMessage());
         }
@@ -213,7 +212,7 @@ public class BookingService {
         bookingRepository.save(booking);
 
         try {
-            emailService.sendCancellationNotification(booking);
+            notificationService.sendCancellationNotification(booking);
         } catch (Exception e) {
             System.err.println("Failed to send cancellation notification: " + e.getMessage());
         }

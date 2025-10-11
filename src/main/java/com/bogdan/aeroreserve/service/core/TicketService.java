@@ -3,7 +3,7 @@ package com.bogdan.aeroreserve.service.core;
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
 import com.bogdan.aeroreserve.repository.TicketRepository;
-import com.bogdan.aeroreserve.service.notification.PdfTicketService;
+import com.bogdan.aeroreserve.service.generator.PdfTicketService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -95,6 +95,6 @@ public class TicketService {
         TicketEntity ticket = getTicketByBooking(booking)
                 .orElseThrow(() -> new RuntimeException("Ticket not found for booking"));
 
-        return pdfTicketService.generateTicketPdfWithTicketInfo(booking, ticket);
+        return pdfTicketService.generateTicket(booking, ticket);
     }
 }
