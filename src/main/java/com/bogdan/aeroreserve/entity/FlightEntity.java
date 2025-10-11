@@ -11,6 +11,45 @@ import java.util.List;
 
 @Entity
 @Table(name = "flights")
+@NamedEntityGraphs({
+        @NamedEntityGraph(
+                name = "Flight.withDetails",
+                attributeNodes = {
+                        @NamedAttributeNode("route"),
+                        @NamedAttributeNode(value = "route", subgraph = "routeCities"),
+                        @NamedAttributeNode("aircraft"),
+                        @NamedAttributeNode("airline")
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "routeCities",
+                                attributeNodes = {
+                                        @NamedAttributeNode("departureCity"),
+                                        @NamedAttributeNode("arrivalCity")
+                                }
+                        )
+                }
+        ),
+        @NamedEntityGraph(
+                name = "Flight.withAllDetails",
+                attributeNodes = {
+                        @NamedAttributeNode("route"),
+                        @NamedAttributeNode(value = "route", subgraph = "routeCities"),
+                        @NamedAttributeNode("aircraft"),
+                        @NamedAttributeNode("airline"),
+                        @NamedAttributeNode("seats")
+                },
+                subgraphs = {
+                        @NamedSubgraph(
+                                name = "routeCities",
+                                attributeNodes = {
+                                        @NamedAttributeNode("departureCity"),
+                                        @NamedAttributeNode("arrivalCity")
+                                }
+                        )
+                }
+        )
+})
 @Data
 @NoArgsConstructor
 public class FlightEntity {
@@ -44,13 +83,24 @@ public class FlightEntity {
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SeatEntity> seats = new ArrayList<>();
 
+    // Добавьте кеширование на уровне метода
+    @Transient
+    private transient Integer cachedAvailableSeats;
+
     public int getAvailableSeats() {
+        if (cachedAvailableSeats != null) {
+            return cachedAvailableSeats;
+        }
+
         if (seats == null || seats.isEmpty()) {
+            cachedAvailableSeats = 0;
             return 0;
         }
-        return (int) seats.stream()
+
+        cachedAvailableSeats = (int) seats.stream()
                 .filter(SeatEntity::isAvailable)
                 .count();
+        return cachedAvailableSeats;
     }
 
     public String getDepartureCity() {

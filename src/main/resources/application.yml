@@ -2,6 +2,13 @@ spring:
   application:
     name: AeroReserve
 
+  cache:
+    type: caffeine
+    cache-names: flights,seats
+    caffeine:
+      spec: maximumSize=1000,expireAfterWrite=10m
+
+
   flyway:
     enabled: true
     locations: classpath:db/migration
