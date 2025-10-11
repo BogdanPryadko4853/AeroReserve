@@ -8,10 +8,10 @@ import com.bogdan.aeroreserve.repository.PaymentRepository;
 import com.bogdan.aeroreserve.repository.SeatRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +22,12 @@ public class BookingService {
     private final StripePaymentService stripePaymentService;
     private final PaymentRepository paymentRepository;
     private final EmailService emailService;
+    private final TicketService ticketService;
+
     /**
      * Создание бронирования с инициализацией платежа
      */
+    @Transactional
     public BookingEntity createBooking(UserEntity user, Long flightId, String seatNumber, String passengerName) {
         FlightEntity flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
@@ -55,28 +58,45 @@ public class BookingService {
     /**
      * Подтверждение бронирования после успешной оплаты
      */
+    @Transactional
     public BookingEntity confirmBooking(Long bookingId) {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
 
         if (booking.isPaid()) {
             booking.setStatus(BookingStatus.CONFIRMED);
+            booking = bookingRepository.save(booking);
+
+            // СОЗДАЕМ БИЛЕТ после подтверждения оплаты
+            TicketEntity ticket = ticketService.createTicket(booking);
 
             try {
-                emailService.sendBookingConfirmation(booking);
+                // Отправляем email с подтверждением и информацией о билете
+                emailService.sendBookingConfirmation(booking, ticket);
             } catch (Exception e) {
-
                 System.err.println("Failed to send confirmation email: " + e.getMessage());
             }
-            return bookingRepository.save(booking);
+            return booking;
         }
 
         throw new RuntimeException("Booking is not paid");
     }
 
     /**
+     * Подтверждение бронирования по paymentIntentId (для webhook)
+     */
+    @Transactional
+    public BookingEntity confirmBookingByPaymentIntent(String paymentIntentId) {
+        BookingEntity booking = bookingRepository.findByPaymentStripePaymentIntentId(paymentIntentId)
+                .orElseThrow(() -> new RuntimeException("Booking not found for payment intent: " + paymentIntentId));
+
+        return confirmBooking(booking.getId());
+    }
+
+    /**
      * Отмена бронирования и платежа
      */
+    @Transactional
     public void cancelBooking(Long bookingId) {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -86,14 +106,29 @@ public class BookingService {
             stripePaymentService.cancelPayment(booking.getPayment().getStripePaymentIntentId());
         }
 
+        // ОТМЕНЯЕМ БИЛЕТ если он был создан
+        ticketService.getTicketByBooking(booking).ifPresent(ticket -> {
+            ticketService.cancelTicket(booking);
+        });
+
         // Освобождаем место
         booking.getSeat().setAvailable(true);
         seatRepository.save(booking.getSeat());
 
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
+
+        try {
+            emailService.sendCancellationNotification(booking);
+        } catch (Exception e) {
+            System.err.println("Failed to send cancellation notification: " + e.getMessage());
+        }
     }
 
+    /**
+     * Возврат средств за бронирование
+     */
+    @Transactional
     public BookingEntity refundBooking(Long bookingId) {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));
@@ -112,6 +147,11 @@ public class BookingService {
         PaymentEntity refundedPayment = stripePaymentService.createRefund(
                 booking.getPayment().getStripePaymentIntentId()
         );
+
+        // ОТМЕНЯЕМ БИЛЕТ при возврате
+        ticketService.getTicketByBooking(booking).ifPresent(ticket -> {
+            ticketService.cancelTicket(booking);
+        });
 
         // Обновляем статус бронирования
         booking.setStatus(BookingStatus.REFUNDED);
@@ -152,10 +192,13 @@ public class BookingService {
     }
 
     public List<BookingEntity> getUserBookings(UserEntity user) {
-
         return bookingRepository.findByUser(user);
     }
 
+    /**
+     * Отмена платежа и бронирования (для случаев, когда оплата не прошла)
+     */
+    @Transactional
     public void cancelPaymentAndBooking(Long bookingId) {
         BookingEntity booking = bookingRepository.findById(bookingId)
                 .orElseThrow(() -> new RuntimeException("Booking not found"));

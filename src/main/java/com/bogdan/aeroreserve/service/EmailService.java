@@ -1,9 +1,11 @@
 package com.bogdan.aeroreserve.service;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
+import com.bogdan.aeroreserve.entity.TicketEntity;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -20,11 +22,13 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
     private final TemplateEngine templateEngine;
+    private final TicketService ticketService;
+    private final PdfTicketService pdfTicketService;
 
     /**
      * Отправка email с билетом после успешной оплаты
      */
-    public void sendBookingConfirmation(BookingEntity booking) {
+    public void sendBookingConfirmation(BookingEntity booking, TicketEntity ticket) {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
@@ -39,6 +43,7 @@ public class EmailService {
             variables.put("user", booking.getUser());
             variables.put("flight", booking.getFlight());
             variables.put("seat", booking.getSeat());
+            variables.put("ticket", ticket);
 
             Context context = new Context();
             context.setVariables(variables);
@@ -46,12 +51,15 @@ public class EmailService {
 
             helper.setText(htmlContent, true);
 
+            // Прикрепляем PDF билета
+            byte[] pdfBytes = pdfTicketService.generateTicketPdfWithTicketInfo(booking, ticket);
+            helper.addAttachment("ticket-" + ticket.getTicketNumber() + ".pdf",
+                    new ByteArrayResource(pdfBytes));
+
             mailSender.send(message);
 
-        } catch (MessagingException e) {
+        } catch (MessagingException | UnsupportedEncodingException e) {
             throw new RuntimeException("Failed to send confirmation email: " + e.getMessage(), e);
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
         }
     }
 

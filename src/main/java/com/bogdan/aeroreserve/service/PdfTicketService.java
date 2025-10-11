@@ -1,6 +1,7 @@
 package com.bogdan.aeroreserve.service;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
+import com.bogdan.aeroreserve.entity.TicketEntity;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFont;
@@ -30,7 +31,10 @@ public class PdfTicketService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public byte[] generateTicketPdf(BookingEntity booking) {
+    /**
+     * Основной метод для генерации PDF с информацией о билете
+     */
+    public byte[] generateTicketPdfWithTicketInfo(BookingEntity booking, TicketEntity ticket) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             PdfWriter writer = new PdfWriter(baos);
             PdfDocument pdf = new PdfDocument(writer);
@@ -39,14 +43,10 @@ public class PdfTicketService {
             PdfFont boldFont = PdfFontFactory.createFont(StandardFonts.HELVETICA_BOLD);
             PdfFont normalFont = PdfFontFactory.createFont(StandardFonts.HELVETICA);
 
-            addHeader(document, boldFont, booking);
-
-            addPassengerFlightInfo(document, boldFont, normalFont, booking);
-
+            addHeader(document, boldFont, booking, ticket);
+            addPassengerFlightInfo(document, boldFont, normalFont, booking, ticket);
             addRouteTimingInfo(document, boldFont, normalFont, booking);
-
             addSeatBookingInfo(document, boldFont, normalFont, booking);
-
             addFooter(document, normalFont);
 
             document.close();
@@ -58,7 +58,19 @@ public class PdfTicketService {
         }
     }
 
-    private void addHeader(Document document, PdfFont boldFont, BookingEntity booking) {
+    /**
+     * Старый метод для обратной совместимости
+     */
+    public byte[] generateTicketPdf(BookingEntity booking) {
+        // Для обратной совместимости, создаем временный билет
+        TicketEntity tempTicket = new TicketEntity();
+        tempTicket.setTicketNumber("TEMP-" + booking.getBookingNumber());
+        tempTicket.setStatus(booking.getStatus().toString());
+
+        return generateTicketPdfWithTicketInfo(booking, tempTicket);
+    }
+
+    private void addHeader(Document document, PdfFont boldFont, BookingEntity booking, TicketEntity ticket) {
         Paragraph title = new Paragraph("E-TICKET - BOARDING PASS")
                 .setFont(boldFont)
                 .setFontSize(20)
@@ -73,7 +85,11 @@ public class PdfTicketService {
         headerTable.addCell(new Cell().add(new Paragraph("AeroReserve Airlines")
                 .setFont(boldFont)
                 .setFontSize(16)));
-        headerTable.addCell(new Cell().add(new Paragraph("Booking: " + booking.getBookingNumber())
+
+        // Добавляем номер билета
+        headerTable.addCell(new Cell().add(new Paragraph(
+                "Ticket: " + ticket.getTicketNumber() + "\n" +
+                        "Booking: " + booking.getBookingNumber())
                 .setFont(boldFont)
                 .setFontSize(12)
                 .setTextAlignment(TextAlignment.RIGHT)));
@@ -82,7 +98,8 @@ public class PdfTicketService {
         document.add(new Paragraph("\n"));
     }
 
-    private void addPassengerFlightInfo(Document document, PdfFont boldFont, PdfFont normalFont, BookingEntity booking) {
+    private void addPassengerFlightInfo(Document document, PdfFont boldFont, PdfFont normalFont,
+                                        BookingEntity booking, TicketEntity ticket) {
         Table infoTable = new Table(new float[]{1, 1});
         infoTable.setWidth(UnitValue.createPercentValue(100));
         infoTable.setMarginBottom(15);
@@ -93,10 +110,14 @@ public class PdfTicketService {
         infoTable.addCell(createCell("Name: " + booking.getPassengerName(), normalFont, false));
         infoTable.addCell(createCell("Flight: " + booking.getFlight().getFlightNumber(), normalFont, false));
 
-        infoTable.addCell(createCell("Booking Ref: " + booking.getBookingNumber(), normalFont, false));
+        // Добавляем номер билета в информацию
+        infoTable.addCell(createCell(
+                "Ticket: " + ticket.getTicketNumber() + "\n" +
+                        "Booking: " + booking.getBookingNumber(), normalFont, false));
+
         infoTable.addCell(createCell("Aircraft: " + booking.getFlight().getAircraft().getModel(), normalFont, false));
 
-        infoTable.addCell(createCell("Status: " + booking.getStatus(), normalFont, false));
+        infoTable.addCell(createCell("Status: " + ticket.getStatus(), normalFont, false));
         infoTable.addCell(createCell("Airline: " +
                 (booking.getFlight().getAirline() != null ?
                         booking.getFlight().getAirline().getName() : "AeroReserve"), normalFont, false));
@@ -113,13 +134,18 @@ public class PdfTicketService {
         routeTable.addCell(createCell("", boldFont, true));
         routeTable.addCell(createCell("ARRIVAL", boldFont, true));
 
-        routeTable.addCell(createCell(booking.getFlight().getDepartureCity(), boldFont, false)
+        String departureCity = booking.getFlight().getRoute() != null ?
+                booking.getFlight().getRoute().getDepartureCity().getName() : "Unknown";
+        String arrivalCity = booking.getFlight().getRoute() != null ?
+                booking.getFlight().getRoute().getArrivalCity().getName() : "Unknown";
+
+        routeTable.addCell(createCell(departureCity, boldFont, false)
                 .setFontSize(16)
                 .setTextAlignment(TextAlignment.CENTER));
         routeTable.addCell(createCell("➝", boldFont, false)
                 .setFontSize(20)
                 .setTextAlignment(TextAlignment.CENTER));
-        routeTable.addCell(createCell(booking.getFlight().getArrivalCity(), boldFont, false)
+        routeTable.addCell(createCell(arrivalCity, boldFont, false)
                 .setFontSize(16)
                 .setTextAlignment(TextAlignment.CENTER));
 
@@ -129,7 +155,7 @@ public class PdfTicketService {
                 normalFont, false).setTextAlignment(TextAlignment.CENTER));
 
         routeTable.addCell(createCell("Duration\n" +
-                        TIME_FORMATTER.format(booking.getFlight().getArrivalTime()),
+                        formatDuration(booking.getFlight().getDepartureTime(), booking.getFlight().getArrivalTime()),
                 normalFont, false).setTextAlignment(TextAlignment.CENTER));
 
         routeTable.addCell(createCell(
@@ -205,5 +231,12 @@ public class PdfTicketService {
         cell.add(paragraph);
         cell.setPadding(5);
         return cell;
+    }
+
+    private String formatDuration(java.time.LocalDateTime departure, java.time.LocalDateTime arrival) {
+        java.time.Duration duration = java.time.Duration.between(departure, arrival);
+        long hours = duration.toHours();
+        long minutes = duration.toMinutesPart();
+        return String.format("%dh %dm", hours, minutes);
     }
 }
