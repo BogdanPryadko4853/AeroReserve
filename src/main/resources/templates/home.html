@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>AeroReserve - Find Your Perfect Flight</title>
+    <title>AeroReserve - Найдите свой идеальный рейс</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -141,10 +141,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link active" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -154,13 +154,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
@@ -168,10 +168,10 @@
             </div>
             <div class="nav-item" th:unless="${user != null}">
                 <a class="nav-link" th:href="@{/login}">
-                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                    <i class="fas fa-sign-in-alt me-1"></i>Войти
                 </a>
             </div>
-            <a class="nav-link" th:href="@{/statistics}">Statistics</a>
+            <a class="nav-link" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
 </nav>
@@ -180,29 +180,29 @@
     <!-- Hero Section -->
     <div class="hero-section p-5 mb-5 text-center position-relative">
         <div class="position-relative z-1">
-            <h1 class="display-4 fw-bold mb-3">✈️ Discover Your Next Adventure</h1>
-            <p class="lead mb-4 fs-5">Book flights effortlessly with our modern booking platform. Experience the future of air travel.</p>
+            <h1 class="display-4 fw-bold mb-3">✈️ Откройте свое следующее приключение</h1>
+            <p class="lead mb-4 fs-5">Бронируйте авиарейсы без усилий с нашей современной платформой. Испытайте будущее авиаперелетов.</p>
             <div class="row justify-content-center mt-5">
                 <div class="col-md-3 mb-3">
                     <div class="feature-icon">
                         <i class="fas fa-bolt text-white fs-4"></i>
                     </div>
-                    <h6 class="fw-bold">Instant Booking</h6>
-                    <small class="opacity-75">Book in under 60 seconds</small>
+                    <h6 class="fw-bold">Мгновенное бронирование</h6>
+                    <small class="opacity-75">Бронируйте менее чем за 60 секунд</small>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="feature-icon">
                         <i class="fas fa-shield-alt text-white fs-4"></i>
                     </div>
-                    <h6 class="fw-bold">Secure & Safe</h6>
-                    <small class="opacity-75">Your data is protected</small>
+                    <h6 class="fw-bold">Безопасно и надежно</h6>
+                    <small class="opacity-75">Ваши данные защищены</small>
                 </div>
                 <div class="col-md-3 mb-3">
                     <div class="feature-icon">
                         <i class="fas fa-globe text-white fs-4"></i>
                     </div>
-                    <h6 class="fw-bold">Global Reach</h6>
-                    <small class="opacity-75">Flights worldwide</small>
+                    <h6 class="fw-bold">Глобальный охват</h6>
+                    <small class="opacity-75">Рейсы по всему миру</small>
                 </div>
             </div>
         </div>
@@ -211,28 +211,28 @@
     <!-- Search Form -->
     <div class="search-card p-4 mb-5">
         <div class="text-center mb-4">
-            <h2 class="fw-bold text-dark mb-2">Find Your Perfect Flight</h2>
-            <p class="text-muted">Search across thousands of destinations worldwide</p>
+            <h2 class="fw-bold text-dark mb-2">Найдите свой идеальный рейс</h2>
+            <p class="text-muted">Ищите среди тысяч направлений по всему миру</p>
         </div>
         <form th:action="@{/search}" method="get">
             <div class="row g-3">
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="form-label fw-semibold text-dark">From</label>
-                        <input type="text" name="from" class="form-control form-control-lg" placeholder="Departure city" required
+                        <label class="form-label fw-semibold text-dark">Откуда</label>
+                        <input type="text" name="from" class="form-control form-control-lg" placeholder="Город вылета" required
                                th:value="${from != null} ? ${from} : ''">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="form-label fw-semibold text-dark">To</label>
-                        <input type="text" name="to" class="form-control form-control-lg" placeholder="Destination city" required
+                        <label class="form-label fw-semibold text-dark">Куда</label>
+                        <input type="text" name="to" class="form-control form-control-lg" placeholder="Город назначения" required
                                th:value="${to != null} ? ${to} : ''">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
-                        <label class="form-label fw-semibold text-dark">Departure Date</label>
+                        <label class="form-label fw-semibold text-dark">Дата вылета</label>
                         <input type="date" name="date" class="form-control form-control-lg" required
                                th:value="${date != null} ? ${date} : ''">
                     </div>
@@ -241,7 +241,7 @@
                     <div class="form-group">
                         <label class="form-label fw-semibold text-dark">&nbsp;</label>
                         <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
-                            <i class="fas fa-search me-2"></i>Search Flights
+                            <i class="fas fa-search me-2"></i>Найти рейсы
                         </button>
                     </div>
                 </div>
@@ -252,11 +252,11 @@
     <!-- Available Flights -->
     <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold text-dark">✨ Available Flights</h2>
+            <h2 class="fw-bold text-dark">✨ Доступные рейсы</h2>
             <div class="text-end">
-                <span class="badge bg-primary fs-6" th:text="${totalItems} + ' total flights'"></span>
+                <span class="badge bg-primary fs-6" th:text="${totalItems} + ' всего рейсов'"></span>
                 <div th:if="${totalPages > 1}" class="text-muted small">
-                    Page <span th:text="${currentPage + 1}"></span> of <span th:text="${totalPages}"></span>
+                    Страница <span th:text="${currentPage + 1}"></span> из <span th:text="${totalPages}"></span>
                 </div>
             </div>
         </div>
@@ -270,7 +270,7 @@
                         </div>
                         <span class="airline-badge" th:text="${flight.airline?.name ?: 'AeroReserve'}"></span>
                         <div class="mt-2">
-                            <span class="seats-badge" th:text="${flight.availableSeats} + ' seats left'"></span>
+                            <span class="seats-badge" th:text="${flight.availableSeats} + ' мест осталось'"></span>
                         </div>
                     </div>
 
@@ -295,12 +295,12 @@
 
                     <div class="col-md-2 text-center">
                         <div class="price-tag mb-1" th:text="'$' + ${flight.price}"></div>
-                        <small class="text-muted" th:text="${flight.aircraft.totalSeats} + ' total seats'"></small>
+                        <small class="text-muted" th:text="${flight.aircraft.totalSeats} + ' всего мест'"></small>
                     </div>
 
                     <div class="col-md-2 text-end">
                         <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-primary btn-lg px-4">
-                            <i class="fas fa-chair me-2"></i>Select Seats
+                            <i class="fas fa-chair me-2"></i>Выбрать места
                         </a>
                     </div>
                 </div>
@@ -310,10 +310,10 @@
         <div th:if="${flights != null and flights.empty}" class="text-center py-5">
             <div class="search-card p-5">
                 <i class="fas fa-plane-slash text-muted fs-1 mb-3"></i>
-                <h4 class="text-dark mb-3">No flights found</h4>
-                <p class="text-muted mb-4">We couldn't find any flights matching your search criteria. Try adjusting your search parameters.</p>
+                <h4 class="text-dark mb-3">Рейсы не найдены</h4>
+                <p class="text-muted mb-4">Мы не смогли найти рейсы, соответствующие вашим критериям поиска. Попробуйте изменить параметры поиска.</p>
                 <a th:href="@{/}" class="btn btn-primary btn-lg">
-                    <i class="fas fa-redo me-2"></i>Search Again
+                    <i class="fas fa-redo me-2"></i>Искать снова
                 </a>
             </div>
         </div>
@@ -321,22 +321,22 @@
         <div th:if="${flights == null}" class="text-center py-5">
             <div class="search-card p-5">
                 <i class="fas fa-globe-americas text-primary fs-1 mb-3"></i>
-                <h4 class="text-dark mb-3">Ready to Explore?</h4>
-                <p class="text-muted mb-4">Use the search form above to discover amazing flight deals to destinations around the world.</p>
+                <h4 class="text-dark mb-3">Готовы исследовать?</h4>
+                <p class="text-muted mb-4">Используйте форму поиска выше, чтобы найти удивительные предложения на авиарейсы в направления по всему миру.</p>
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="row text-start">
                             <div class="col-md-4 mb-3">
                                 <i class="fas fa-star text-warning me-2"></i>
-                                <span>Best Prices Guaranteed</span>
+                                <span>Лучшие цены гарантированы</span>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <i class="fas fa-clock text-info me-2"></i>
-                                <span>24/7 Support</span>
+                                <span>Поддержка 24/7</span>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <i class="fas fa-lock text-success me-2"></i>
-                                <span>Secure Booking</span>
+                                <span>Безопасное бронирование</span>
                             </div>
                         </div>
                     </div>
@@ -348,7 +348,7 @@
     <!-- Pagination -->
     <div th:if="${totalPages > 1}" class="row mt-5">
         <div class="col-md-12">
-            <nav aria-label="Flight pagination">
+            <nav aria-label="Навигация по рейсам">
                 <ul class="pagination justify-content-center">
                     <!-- Previous Page -->
                     <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
@@ -357,10 +357,10 @@
                                    @{/search(from=${from}, to=${to}, date=${date}, page=${currentPage - 1}, size=${pageSize})} :
                                    @{/(page=${currentPage - 1}, size=${pageSize})}"
                            th:if="${currentPage > 0}">
-                            <i class="fas fa-chevron-left me-1"></i>Previous
+                            <i class="fas fa-chevron-left me-1"></i>Назад
                         </a>
                         <span class="page-link" th:unless="${currentPage > 0}">
-                            <i class="fas fa-chevron-left me-1"></i>Previous
+                            <i class="fas fa-chevron-left me-1"></i>Назад
                         </span>
                     </li>
 
@@ -382,10 +382,10 @@
                                    @{/search(from=${from}, to=${to}, date=${date}, page=${currentPage + 1}, size=${pageSize})} :
                                    @{/(page=${currentPage + 1}, size=${pageSize})}"
                            th:if="${currentPage < totalPages - 1}">
-                            Next<i class="fas fa-chevron-right ms-1"></i>
+                            Вперед<i class="fas fa-chevron-right ms-1"></i>
                         </a>
                         <span class="page-link" th:unless="${currentPage < totalPages - 1}">
-                            Next<i class="fas fa-chevron-right ms-1"></i>
+                            Вперед<i class="fas fa-chevron-right ms-1"></i>
                         </span>
                     </li>
                 </ul>
@@ -394,9 +394,9 @@
             <!-- Page Info -->
             <div class="text-center mt-3">
                 <p class="text-muted">
-                    Showing <span th:text="${currentPage * pageSize + 1}"></span> -
+                    Показано <span th:text="${currentPage * pageSize + 1}"></span> -
                     <span th:text="${(currentPage * pageSize + pageSize) > totalItems ? totalItems : (currentPage * pageSize + pageSize)}"></span>
-                    of <span th:text="${totalItems}"></span> flights
+                    из <span th:text="${totalItems}"></span> рейсов
                 </p>
                 <div class="btn-group btn-group-sm">
                     <a th:href="${from != null and to != null and date != null} ?

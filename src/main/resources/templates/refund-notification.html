@@ -2,32 +2,32 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Refund Notification</title>
+    <title>Уведомление о возврате</title>
 </head>
 <body>
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
     <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center;">
-        <h1>💰 Refund Processed</h1>
+        <h1>💰 Возврат обработан</h1>
     </div>
 
     <div style="padding: 20px;">
-        <p>Dear <span th:text="${user.firstName}"></span>,</p>
+        <p>Уважаемый(ая) <span th:text="${user.firstName}"></span>,</p>
 
-        <p>Your refund for booking <strong th:text="${booking.bookingNumber}"></strong> has been successfully processed.</p>
+        <p>Ваш возврат средств по бронированию <strong th:text="${booking.bookingNumber}"></strong> был успешно обработан.</p>
 
         <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <p><strong>Refund Details:</strong></p>
-            <p>Amount: <span style="color: #2e7d32; font-weight: bold;" th:text="'$' + ${booking.totalPrice}"></span></p>
-            <p>Flight: <span th:text="${flight.flightNumber}"></span> (<span th:text="${flight.departureCity}"></span> → <span th:text="${flight.arrivalCity}"></span>)</p>
+            <p><strong>Детали возврата:</strong></p>
+            <p>Сумма: <span style="color: #2e7d32; font-weight: bold;" th:text="'$' + ${booking.totalPrice}"></span></p>
+            <p>Рейс: <span th:text="${flight.flightNumber}"></span> (<span th:text="${flight.departureCity}"></span> → <span th:text="${flight.arrivalCity}"></span>)</p>
         </div>
 
-        <p>The refund will be returned to your original payment method within 5-10 business days.</p>
+        <p>Возврат будет зачислен на ваш исходный способ оплаты в течение 5-10 рабочих дней.</p>
 
-        <p>We hope to see you on board again soon!</p>
+        <p>Надеемся увидеть вас на борту снова в ближайшее время!</p>
     </div>
 
     <div style="background: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666;">
-        <p>AeroReserve Team</p>
+        <p>Команда AeroReserve</p>
     </div>
 </div>
 </body>

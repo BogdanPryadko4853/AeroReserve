@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Confirm Booking - AeroReserve</title>
+    <title>Подтверждение бронирования - AeroReserve</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -98,10 +98,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -111,13 +111,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
@@ -125,10 +125,10 @@
             </div>
             <div class="nav-item" th:unless="${user != null}">
                 <a class="nav-link" th:href="@{/login}">
-                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                    <i class="fas fa-sign-in-alt me-1"></i>Войти
                 </a>
             </div>
-            <a class="nav-link" th:href="@{/statistics}">Statistics</a>
+            <a class="nav-link" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
 </nav>
@@ -138,8 +138,8 @@
         <div class="col-md-8">
             <!-- Header -->
             <div class="text-center mb-5">
-                <h1 class="fw-bold text-dark mb-3">✈️ Confirm Your Booking</h1>
-                <p class="text-muted fs-5">Review your flight details and complete your reservation</p>
+                <h1 class="fw-bold text-dark mb-3">✈️ Подтвердите ваше бронирование</h1>
+                <p class="text-muted fs-5">Проверьте детали рейса и завершите бронирование</p>
             </div>
 
             <div class="booking-card p-4">
@@ -151,7 +151,7 @@
                 <!-- Flight Summary -->
                 <div class="flight-summary p-4 mb-4">
                     <h5 class="fw-bold text-primary mb-3">
-                        <i class="fas fa-plane me-2"></i>Flight Details
+                        <i class="fas fa-plane me-2"></i>Детали рейса
                     </h5>
                     <div class="row">
                         <div class="col-md-6">
@@ -160,43 +160,43 @@
                                 <span class="text-dark fw-semibold" th:text="${flight.departureCity} + ' → ' + ${flight.arrivalCity}"></span>
                             </div>
                             <div>
-                                <strong>Airline:</strong>
+                                <strong>Авиакомпания:</strong>
                                 <span class="text-muted" th:text="${flight.airline?.name ?: 'AeroReserve'}"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <strong>Departure:</strong>
+                                <strong>Вылет:</strong>
                                 <div class="text-dark fw-semibold" th:text="${#temporals.format(flight.departureTime, 'MMM dd, yyyy HH:mm')}"></div>
                             </div>
                             <div class="mb-3">
-                                <strong>Selected Seat:</strong>
+                                <strong>Выбранное место:</strong>
                                 <div class="text-success fw-bold fs-5" th:text="${seatNumber}"></div>
                                 <span th:if="${seatNumber != null and seatNumber.contains('F')}"
                                       class="class-badge"
                                       style="background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); color: #2d3436;">
-                                    First Class
+                                    Первый класс
                                 </span>
                                 <span th:if="${seatNumber != null and seatNumber.contains('B')}"
                                       class="class-badge"
                                       style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white;">
-                                    Business Class
+                                    Бизнес-класс
                                 </span>
                                 <span th:if="${seatNumber != null and seatNumber.contains('E')}"
                                       class="class-badge"
                                       style="background: linear-gradient(135deg, #55efc4 0%, #00b894 100%); color: white;">
-                                    Economy Class
+                                    Эконом-класс
                                 </span>
                             </div>
                         </div>
                     </div>
                     <div class="row mt-3">
                         <div class="col-md-6">
-                            <strong>Aircraft:</strong>
+                            <strong>Самолет:</strong>
                             <span class="text-muted" th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
                         </div>
                         <div class="col-md-6">
-                            <strong>Duration:</strong>
+                            <strong>Продолжительность:</strong>
                             <span class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></span>
                         </div>
                     </div>
@@ -208,13 +208,13 @@
 
                     <div class="mb-4">
                         <h5 class="fw-bold text-primary mb-3">
-                            <i class="fas fa-user me-2"></i>Passenger Information
+                            <i class="fas fa-user me-2"></i>Информация о пассажире
                         </h5>
                         <div class="mb-3">
-                            <label class="form-label fw-semibold">Passenger Name</label>
+                            <label class="form-label fw-semibold">Имя пассажира</label>
                             <input type="text" name="passengerName" class="form-control form-control-lg"
                                    th:value="${user.firstName + ' ' + user.lastName}" required>
-                            <div class="form-text text-muted">Enter the name of the passenger for this seat</div>
+                            <div class="form-text text-muted">Введите имя пассажира для этого места</div>
                         </div>
                     </div>
 
@@ -223,32 +223,32 @@
                         <div class="d-flex align-items-center">
                             <i class="fas fa-gift text-primary fs-3 me-3"></i>
                             <div>
-                                <h6 class="fw-bold mb-1">🎉 Free Demo Booking</h6>
-                                <p class="mb-0">This is a demonstration system. No payment is required for booking.</p>
+                                <h6 class="fw-bold mb-1">🎉 Демо-бронирование бесплатно</h6>
+                                <p class="mb-0">Это демонстрационная система. Для бронирования оплата не требуется.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Price Summary -->
                     <div class="summary-card p-4 mb-4">
-                        <h6 class="fw-bold text-primary mb-3">Booking Summary</h6>
+                        <h6 class="fw-bold text-primary mb-3">Сводка бронирования</h6>
                         <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span>Seat <strong th:text="${seatNumber}"></strong></span>
+                            <span>Место <strong th:text="${seatNumber}"></strong></span>
                             <span class="fw-bold" th:text="'$' + ${flight.price}"></span>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between align-items-center fw-bold fs-5">
-                            <span class="text-dark">Total Amount</span>
+                            <span class="text-dark">Общая сумма</span>
                             <span class="text-success" th:text="'$' + ${flight.price}"></span>
                         </div>
                     </div>
 
                     <div class="d-grid gap-3">
                         <button type="submit" class="btn btn-success btn-lg py-3">
-                            <i class="fas fa-check-circle me-2"></i>✅ Confirm Free Booking
+                            <i class="fas fa-check-circle me-2"></i>✅ Подтвердить бесплатное бронирование
                         </button>
                         <a th:href="@{/flight/{id}(id=${flight.id})}" class="btn btn-outline-secondary py-3">
-                            <i class="fas fa-arrow-left me-2"></i>Choose Different Seat
+                            <i class="fas fa-arrow-left me-2"></i>Выбрать другое место
                         </a>
                     </div>
                 </form>

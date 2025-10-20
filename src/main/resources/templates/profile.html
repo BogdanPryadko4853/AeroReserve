@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Profile - AeroReserve</title>
+    <title>Мой профиль - AeroReserve</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -74,10 +74,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button"
@@ -87,19 +87,19 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
                 </ul>
             </div>
-            <a class="nav-link" th:href="@{/statistics}">Statistics</a>
+            <a class="nav-link" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
 </nav>
@@ -108,11 +108,11 @@
     <!-- Profile Header -->
     <div class="hero-section p-5 mb-5 text-center position-relative">
         <div class="position-relative z-1">
-            <h1 class="display-5 fw-bold mb-3">👤 My Profile</h1>
-            <p class="lead mb-3 fs-5">Manage your personal information and booking history</p>
+            <h1 class="display-5 fw-bold mb-3">👤 Мой профиль</h1>
+            <p class="lead mb-3 fs-5">Управляйте личной информацией и историей бронирований</p>
             <div class="stat-badge d-inline-block">
                 <i class="fas fa-ticket-alt me-2"></i>
-                <span th:text="${bookings.size()}"></span> Total Bookings
+                <span th:text="${bookings.size()}"></span> Всего бронирований
             </div>
         </div>
     </div>
@@ -132,11 +132,11 @@
                     <div class="row text-center">
                         <div class="col-6">
                             <div class="fw-bold fs-4" th:text="${bookings.size()}"></div>
-                            <small class="text-muted">Bookings</small>
+                            <small class="text-muted">Бронирований</small>
                         </div>
                         <div class="col-6">
                             <div class="fw-bold fs-4" th:text="${#temporals.format(user.createdAt, 'yyyy')}"></div>
-                            <small class="text-muted">Member Since</small>
+                            <small class="text-muted">Участник с</small>
                         </div>
                     </div>
                 </div>
@@ -149,15 +149,15 @@
             <div class="info-card p-4 mb-4">
                 <div class="d-flex align-items-center mb-3">
                     <i class="fas fa-info-circle text-primary fs-4 me-2"></i>
-                    <h4 class="fw-bold mb-0">Personal Information</h4>
+                    <h4 class="fw-bold mb-0">Личная информация</h4>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <strong class="text-primary">First Name:</strong>
+                        <strong class="text-primary">Имя:</strong>
                         <p class="fs-5" th:text="${user.firstName}"></p>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <strong class="text-primary">Last Name:</strong>
+                        <strong class="text-primary">Фамилия:</strong>
                         <p class="fs-5" th:text="${user.lastName}"></p>
                     </div>
                 </div>
@@ -167,17 +167,17 @@
                         <p class="fs-5" th:text="${user.email}"></p>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <strong class="text-primary">Phone:</strong>
-                        <p class="fs-5" th:text="${user.phoneNumber != null} ? ${user.phoneNumber} : 'Not provided'"></p>
+                        <strong class="text-primary">Телефон:</strong>
+                        <p class="fs-5" th:text="${user.phoneNumber != null} ? ${user.phoneNumber} : 'Не указан'"></p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <strong class="text-primary">Member since:</strong>
+                        <strong class="text-primary">Участник с:</strong>
                         <p class="fs-5" th:text="${#temporals.format(user.createdAt, 'MMMM dd, yyyy')}"></p>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <strong class="text-primary">Total bookings:</strong>
+                        <strong class="text-primary">Всего бронирований:</strong>
                         <p class="fs-5" th:text="${bookings.size()}"></p>
                     </div>
                 </div>
@@ -188,19 +188,19 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="d-flex align-items-center">
                         <i class="fas fa-ticket-alt text-primary fs-4 me-2"></i>
-                        <h4 class="fw-bold mb-0">Recent Bookings</h4>
+                        <h4 class="fw-bold mb-0">Недавние бронирования</h4>
                     </div>
                     <a th:href="@{/dashboard}" class="btn btn-primary">
-                        <i class="fas fa-list me-2"></i>View All
+                        <i class="fas fa-list me-2"></i>Просмотреть все
                     </a>
                 </div>
 
                 <div th:if="${bookings.empty}" class="text-center py-4">
                     <i class="fas fa-ticket-alt text-muted fs-1 mb-3"></i>
-                    <h5 class="text-dark mb-3">No Bookings Yet</h5>
-                    <p class="text-muted mb-4">You haven't made any bookings yet.</p>
+                    <h5 class="text-dark mb-3">Пока нет бронирований</h5>
+                    <p class="text-muted mb-4">Вы еще не совершали бронирований.</p>
                     <a th:href="@{/}" class="btn btn-primary btn-lg">
-                        <i class="fas fa-search me-2"></i>Book Your First Flight
+                        <i class="fas fa-search me-2"></i>Забронируйте первый рейс
                     </a>
                 </div>
 
@@ -220,11 +220,11 @@
                             <small class="text-primary" th:text="${booking.flight.airline?.name ?: 'AeroReserve'}"></small>
                         </div>
                         <div class="col-md-2">
-                            <span class="fw-bold" th:text="'Seat ' + ${booking.seat.seatNumber}"></span>
+                            <span class="fw-bold" th:text="'Место ' + ${booking.seat.seatNumber}"></span>
                         </div>
                         <div class="col-md-2 text-end">
                             <a th:href="@{/dashboard}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye me-1"></i>Details
+                                <i class="fas fa-eye me-1"></i>Детали
                             </a>
                         </div>
                     </div>
