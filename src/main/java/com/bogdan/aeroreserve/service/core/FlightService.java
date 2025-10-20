@@ -39,7 +39,6 @@ public class FlightService {
         return flightRepository.findAllWithDetails(pageable);
     }
 
-    // Кеширование поиска рейсов
     @Cacheable(value = "flights", key = "'search-' + #from + '-' + #to + '-' + #date + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     @Transactional(readOnly = true)
     public Page<FlightEntity> searchFlights(String from, String to, LocalDate date, Pageable pageable) {
@@ -47,8 +46,8 @@ public class FlightService {
                 from, to, date, pageable.getPageNumber(), pageable.getPageSize());
 
         // Нормализуем параметры
-        String normalizedFrom = (from != null && !from.trim().isEmpty()) ? from.trim() : null;
-        String normalizedTo = (to != null && !to.trim().isEmpty()) ? to.trim() : null;
+        String normalizedFrom = (from != null && !from.trim().isEmpty()) ? from.trim().toLowerCase() : null;
+        String normalizedTo = (to != null && !to.trim().isEmpty()) ? to.trim().toLowerCase() : null;
         LocalDate normalizedDate = date;
 
         // Если все параметры пустые, возвращаем все рейсы

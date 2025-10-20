@@ -31,8 +31,7 @@ public class PdfTicketService implements TicketGenerator {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-
-
+    
     @Override
     public byte[] generateTicket(BookingEntity booking, TicketEntity ticket) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {

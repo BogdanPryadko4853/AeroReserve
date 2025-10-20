@@ -83,24 +83,26 @@ public class FlightEntity {
     @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<SeatEntity> seats = new ArrayList<>();
 
-    // Добавьте кеширование на уровне метода
     @Transient
     private transient Integer cachedAvailableSeats;
 
     public int getAvailableSeats() {
+        if (seats == null) {
+            return aircraft != null ? aircraft.getTotalSeats() : 0;
+        }
+
         if (cachedAvailableSeats != null) {
             return cachedAvailableSeats;
         }
 
-        if (seats == null || seats.isEmpty()) {
-            cachedAvailableSeats = 0;
-            return 0;
+        try {
+            cachedAvailableSeats = (int) seats.stream()
+                    .filter(SeatEntity::isAvailable)
+                    .count();
+            return cachedAvailableSeats;
+        } catch (Exception e) {
+            return aircraft != null ? aircraft.getTotalSeats() : 0;
         }
-
-        cachedAvailableSeats = (int) seats.stream()
-                .filter(SeatEntity::isAvailable)
-                .count();
-        return cachedAvailableSeats;
     }
 
     public String getDepartureCity() {

@@ -22,14 +22,14 @@ public interface FlightRepository extends JpaRepository<FlightEntity, Long> {
     List<FlightEntity> findByRoute_DepartureCity_NameAndRoute_ArrivalCity_NameAndDepartureTimeBetween(
             String departureCity, String arrivalCity, LocalDateTime start, LocalDateTime end);
 
-    @EntityGraph(attributePaths = {"route", "route.departureCity", "route.arrivalCity", "aircraft", "airline"})
+    @EntityGraph(attributePaths = {"route", "route.departureCity", "route.arrivalCity", "aircraft", "airline", "seats"})
     @Query("""
-        SELECT f FROM FlightEntity f 
-        WHERE (:from IS NULL OR LOWER(f.route.departureCity.name) LIKE LOWER(CONCAT('%', :from, '%'))) 
-        AND (:to IS NULL OR LOWER(f.route.arrivalCity.name) LIKE LOWER(CONCAT('%', :to, '%'))) 
-        AND (:date IS NULL OR FUNCTION('DATE', f.departureTime) = :date) 
-        ORDER BY f.departureTime ASC
-        """)
+    SELECT f FROM FlightEntity f 
+    WHERE (:from IS NULL OR LOWER(f.route.departureCity.name) LIKE CONCAT('%', LOWER(:from), '%')) 
+    AND (:to IS NULL OR LOWER(f.route.arrivalCity.name) LIKE CONCAT('%', LOWER(:to), '%')) 
+    AND FUNCTION('DATE', f.departureTime) = :date 
+    ORDER BY f.departureTime ASC
+    """)
     Page<FlightEntity> findBySearchCriteria(
             @Param("from") String from,
             @Param("to") String to,
