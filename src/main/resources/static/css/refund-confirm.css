@@ -1,0 +1,22 @@
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+}
+.refund-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.95);
+}
+.btn-warning {
+    background: linear-gradient(135deg, #f6e05e 0%, #ecc94b 100%);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
+.btn-danger {
+    background: linear-gradient(135deg, #fc8181 0%, #f56565 100%);
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+}
