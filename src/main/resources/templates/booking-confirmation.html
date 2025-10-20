@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Flight Ticket</title>
+    <title>Авиабилет</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -75,12 +75,12 @@
 <body>
 <div class="header">
     <h1>🎫 AeroReserve</h1>
-    <p>Your Flight Booking Confirmation</p>
+    <p>Подтверждение вашего авиабилета</p>
 </div>
 
 <div class="ticket">
     <div style="padding: 20px; text-align: center; background: #e8f5e8;">
-        <h2 style="color: #2e7d32; margin: 0;">BOOKING CONFIRMED</h2>
+        <h2 style="color: #2e7d32; margin: 0;">БРОНИРОВАНИЕ ПОДТВЕРЖДЕНО</h2>
         <p style="margin: 5px 0; font-size: 18px;">
             <strong th:text="${booking.bookingNumber}"></strong>
         </p>
@@ -113,19 +113,19 @@
     <div style="padding: 20px;">
         <div class="details-grid">
             <div class="detail-item">
-                <strong>Passenger</strong><br>
+                <strong>Пассажир</strong><br>
                 <span th:text="${booking.passengerName}"></span>
             </div>
             <div class="detail-item">
-                <strong>Seat</strong><br>
+                <strong>Место</strong><br>
                 <span th:text="${seat.seatNumber}"></span> (<span th:text="${seat.seatClass}"></span>)
             </div>
             <div class="detail-item">
-                <strong>Aircraft</strong><br>
+                <strong>Самолет</strong><br>
                 <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
             </div>
             <div class="detail-item">
-                <strong>Total Paid</strong><br>
+                <strong>Всего оплачено</strong><br>
                 <span style="color: #2e7d32; font-weight: bold;"
                       th:text="'$' + ${booking.totalPrice}"></span>
             </div>
@@ -133,7 +133,7 @@
     </div>
 
     <div class="barcode">
-        <div>BOARDING PASS</div>
+        <div>ПОСАДОЧНЫЙ ТАЛОН</div>
         <div style="font-size: 18px; margin: 10px 0;"
              th:text="${booking.bookingNumber}"></div>
         <div>✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️ ✈️</div>
@@ -141,15 +141,15 @@
 </div>
 
 <div class="footer">
-    <p>Thank you for choosing AeroReserve!</p>
+    <p>Спасибо, что выбрали AeroReserve!</p>
     <p>
-        Need help? Contact us at support@aeroreserve.com<br>
-        or call +1 (555) 123-4567
+        Нужна помощь? Свяжитесь с нами: support@aeroreserve.com<br>
+        или позвоните +1 (555) 123-4567
     </p>
     <p>
         <small>
-            This is an automated message. Please do not reply to this email.<br>
-            Booking date: <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy HH:mm')}"></span>
+            Это автоматическое сообщение. Пожалуйста, не отвечайте на это письмо.<br>
+            Дата бронирования: <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy HH:mm')}"></span>
         </small>
     </p>
 </div>

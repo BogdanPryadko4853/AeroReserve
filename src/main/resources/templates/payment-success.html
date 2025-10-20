@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Payment Successful - AeroReserve</title>
+    <title>Оплата прошла успешно - AeroReserve</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); min-height: 100vh;">
@@ -14,18 +14,18 @@
                     <div class="text-success mb-4">
                         <i class="fas fa-check-circle" style="font-size: 4rem;"></i>
                     </div>
-                    <h2 class="card-title mb-3">Payment Successful! 🎉</h2>
-                    <p class="card-text mb-4">Your flight booking has been confirmed and paid successfully.</p>
+                    <h2 class="card-title mb-3">Оплата прошла успешно! 🎉</h2>
+                    <p class="card-text mb-4">Ваше бронирование рейса подтверждено и успешно оплачено.</p>
 
                     <div th:if="${booking}" class="booking-info text-start mb-4 p-3" style="background: #f8f9fa; border-radius: 10px;">
-                        <p><strong>Booking Number:</strong> <span th:text="${booking.bookingNumber}"></span></p>
-                        <p><strong>Flight:</strong> <span th:text="${booking.flight.flightNumber}"></span></p>
-                        <p><strong>Amount Paid:</strong> $<span th:text="${booking.totalPrice}"></span></p>
+                        <p><strong>Номер бронирования:</strong> <span th:text="${booking.bookingNumber}"></span></p>
+                        <p><strong>Рейс:</strong> <span th:text="${booking.flight.flightNumber}"></span></p>
+                        <p><strong>Сумма оплаты:</strong> $<span th:text="${booking.totalPrice}"></span></p>
                     </div>
 
                     <div class="d-grid gap-2">
-                        <a th:href="@{/dashboard}" class="btn btn-primary btn-lg">View My Bookings</a>
-                        <a th:href="@{/}" class="btn btn-outline-secondary">Book Another Flight</a>
+                        <a th:href="@{/dashboard}" class="btn btn-primary btn-lg">Просмотреть мои бронирования</a>
+                        <a th:href="@{/}" class="btn btn-outline-secondary">Забронировать другой рейс</a>
                     </div>
                 </div>
             </div>

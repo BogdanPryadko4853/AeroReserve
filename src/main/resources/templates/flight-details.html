@@ -95,10 +95,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -108,13 +108,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
@@ -139,12 +139,12 @@
 
     <!-- Flight Information -->
     <div class="flight-card p-4 mb-5">
-        <h3 class="fw-bold text-dark mb-4">📋 Flight Details</h3>
+        <h3 class="fw-bold text-dark mb-4">📋 Информация о рейсе</h3>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-4">
                     <h5 class="fw-semibold text-primary mb-3">
-                        <i class="fas fa-route me-2"></i>Route Information
+                        <i class="fas fa-route me-2"></i>Информация о маршруте
                     </h5>
                     <div class="row align-items-center mb-3">
                         <div class="col-5 text-center">
@@ -165,23 +165,23 @@
             </div>
             <div class="col-md-6">
                 <h5 class="fw-semibold text-primary mb-3">
-                    <i class="fas fa-info-circle me-2"></i>Flight Information
+                    <i class="fas fa-info-circle me-2"></i>Информация о рейсе
                 </h5>
                 <div class="row">
                     <div class="col-6 mb-3">
-                        <strong>Aircraft:</strong>
+                        <strong>Самолет:</strong>
                         <div class="text-muted" th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></div>
                     </div>
                     <div class="col-6 mb-3">
-                        <strong>Total Capacity:</strong>
-                        <div class="text-muted" th:text="${flight.aircraft.totalSeats} + ' seats'"></div>
+                        <strong>Общая вместимость:</strong>
+                        <div class="text-muted" th:text="${flight.aircraft.totalSeats} + ' мест'"></div>
                     </div>
                     <div class="col-6 mb-3">
-                        <strong>Available Seats:</strong>
+                        <strong>Доступные места:</strong>
                         <div class="text-success fw-bold fs-5" th:text="${flight.availableSeats}"></div>
                     </div>
                     <div class="col-6 mb-3">
-                        <strong>Price per seat:</strong>
+                        <strong>Цена за место:</strong>
                         <div class="text-success fw-bold fs-5" th:text="'$' + ${flight.price}"></div>
                     </div>
                 </div>
@@ -191,35 +191,35 @@
 
     <!-- Seat Selection -->
     <div class="flight-card p-4">
-        <h3 class="fw-bold text-dark mb-4">💺 Choose Your Seat</h3>
+        <h3 class="fw-bold text-dark mb-4">💺 Выберите ваше место</h3>
 
         <div th:if="${availableSeats.empty}" class="text-center py-5">
             <i class="fas fa-times-circle text-muted fs-1 mb-3"></i>
-            <h4 class="text-dark mb-3">No Available Seats</h4>
-            <p class="text-muted mb-4">All seats on this flight are currently booked. Please check back later or choose a different flight.</p>
+            <h4 class="text-dark mb-3">Нет доступных мест</h4>
+            <p class="text-muted mb-4">Все места на этом рейсе в настоящее время забронированы. Пожалуйста, проверьте позже или выберите другой рейс.</p>
             <a th:href="@{/}" class="btn btn-primary btn-lg">
-                <i class="fas fa-search me-2"></i>Search Other Flights
+                <i class="fas fa-search me-2"></i>Поиск других рейсов
             </a>
         </div>
 
         <div th:if="${!availableSeats.empty}">
             <!-- Legend -->
             <div class="mb-4 p-4" style="background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 15px;">
-                <h5 class="fw-semibold mb-3">Seat Classes:</h5>
+                <h5 class="fw-semibold mb-3">Классы мест:</h5>
                 <div class="row">
                     <div class="col-md-4 mb-2">
                             <span class="badge fs-6 p-3 w-100" style="background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); color: #2d3436;">
-                                <i class="fas fa-crown me-2"></i>First Class
+                                <i class="fas fa-crown me-2"></i>Первый класс
                             </span>
                     </div>
                     <div class="col-md-4 mb-2">
                             <span class="badge fs-6 p-3 w-100" style="background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%); color: white;">
-                                <i class="fas fa-briefcase me-2"></i>Business Class
+                                <i class="fas fa-briefcase me-2"></i>Бизнес-класс
                             </span>
                     </div>
                     <div class="col-md-4 mb-2">
                             <span class="badge fs-6 p-3 w-100" style="background: linear-gradient(135deg, #55efc4 0%, #00b894 100%); color: white;">
-                                <i class="fas fa-user me-2"></i>Economy Class
+                                <i class="fas fa-user me-2"></i>Эконом-класс
                             </span>
                     </div>
                 </div>
@@ -228,7 +228,7 @@
             <!-- First Class Section -->
             <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'FIRST'])} > 0"
                  class="cabin-section first-class">
-                <h4 class="fw-bold mb-4">👑 First Class</h4>
+                <h4 class="fw-bold mb-4">👑 Первый класс</h4>
                 <div class="d-flex flex-wrap justify-content-center">
                     <div th:each="seat : ${availableSeats}"
                          th:if="${seat.seatClass.name() == 'FIRST'}">
@@ -244,7 +244,7 @@
             <!-- Business Class Section -->
             <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'BUSINESS'])} > 0"
                  class="cabin-section business-class">
-                <h4 class="fw-bold mb-4">💼 Business Class</h4>
+                <h4 class="fw-bold mb-4">💼 Бизнес-класс</h4>
                 <div class="d-flex flex-wrap justify-content-center">
                     <div th:each="seat : ${availableSeats}"
                          th:if="${seat.seatClass.name() == 'BUSINESS'}">
@@ -260,7 +260,7 @@
             <!-- Economy Class Section -->
             <div th:if="${#lists.size(availableSeats.?[seatClass.name() == 'ECONOMY'])} > 0"
                  class="cabin-section economy-class">
-                <h4 class="fw-bold mb-4">👤 Economy Class</h4>
+                <h4 class="fw-bold mb-4">👤 Эконом-класс</h4>
                 <div class="d-flex flex-wrap justify-content-center">
                     <div th:each="seat : ${availableSeats}"
                          th:if="${seat.seatClass.name() == 'ECONOMY'}">

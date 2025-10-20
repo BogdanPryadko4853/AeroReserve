@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>My Bookings - AeroReserve</title>
+    <title>Мои бронирования - AeroReserve</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -134,10 +134,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link active" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -147,13 +147,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
@@ -161,10 +161,10 @@
             </div>
             <div class="nav-item" th:unless="${user != null}">
                 <a class="nav-link" th:href="@{/login}">
-                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                    <i class="fas fa-sign-in-alt me-1"></i>Войти
                 </a>
             </div>
-            <a class="nav-link" th:href="@{/statistics}">Statistics</a>
+            <a class="nav-link" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
 </nav>
@@ -173,11 +173,11 @@
     <!-- Hero Section -->
     <div class="hero-section p-5 mb-5 text-center position-relative">
         <div class="position-relative z-1">
-            <h1 class="display-5 fw-bold mb-3">🎫 My Bookings</h1>
-            <p class="lead mb-3 fs-5">Manage your flight reservations and travel plans</p>
+            <h1 class="display-5 fw-bold mb-3">🎫 Мои бронирования</h1>
+            <p class="lead mb-3 fs-5">Управляйте своими бронированиями авиарейсов и планами путешествий</p>
             <div class="d-inline-block" style="background: rgba(255,255,255,0.2); padding: 8px 20px; border-radius: 20px;">
                 <i class="fas fa-ticket-alt me-2"></i>
-                <span th:text="${bookings.size()}"></span> Total Bookings
+                <span th:text="${bookings.size()}"></span> Всего бронирований
             </div>
         </div>
     </div>
@@ -187,8 +187,8 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-check-circle fs-4 me-3"></i>
             <div>
-                <h5 class="mb-1">✅ Booking Confirmed!</h5>
-                <p class="mb-0">Your booking has been successfully created. Booking number: <strong th:text="${param.booked}"></strong></p>
+                <h5 class="mb-1">✅ Бронирование подтверждено!</h5>
+                <p class="mb-0">Ваше бронирование успешно создано. Номер бронирования: <strong th:text="${param.booked}"></strong></p>
             </div>
         </div>
     </div>
@@ -197,8 +197,8 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-info-circle fs-4 me-3"></i>
             <div>
-                <h5 class="mb-1">Booking Cancelled</h5>
-                <p class="mb-0">Your booking has been cancelled successfully.</p>
+                <h5 class="mb-1">Бронирование отменено</h5>
+                <p class="mb-0">Ваше бронирование было успешно отменено.</p>
             </div>
         </div>
     </div>
@@ -207,8 +207,8 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-money-bill-wave fs-4 me-3"></i>
             <div>
-                <h5 class="mb-1">💰 Refund Processed!</h5>
-                <p class="mb-0">Your refund has been successfully processed. Funds will be returned within 5-10 business days.</p>
+                <h5 class="mb-1">💰 Возврат средств обработан!</h5>
+                <p class="mb-0">Ваш возврат средств был успешно обработан. Деньги будут возвращены в течение 5-10 рабочих дней.</p>
             </div>
         </div>
     </div>
@@ -217,7 +217,7 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-exclamation-circle fs-4 me-3"></i>
             <div>
-                <h5 class="mb-1">❌ Refund Failed</h5>
+                <h5 class="mb-1">❌ Ошибка возврата средств</h5>
                 <p class="mb-0" th:text="${param.refundError}"></p>
             </div>
         </div>
@@ -227,18 +227,18 @@
         <div class="d-flex align-items-center">
             <i class="fas fa-credit-card fs-4 me-3"></i>
             <div>
-                <h5 class="mb-1">💳 Payment Status</h5>
-                <p class="mb-0" th:if="${param.payment == 'success'}">Payment completed successfully!</p>
-                <p class="mb-0" th:if="${param.payment == 'failed'}">Payment failed. Please try again.</p>
-                <p class="mb-0" th:if="${param.payment == 'cancelled'}">Payment was cancelled.</p>
+                <h5 class="mb-1">💳 Статус платежа</h5>
+                <p class="mb-0" th:if="${param.payment == 'success'}">Платеж успешно завершен!</p>
+                <p class="mb-0" th:if="${param.payment == 'failed'}">Платеж не прошел. Пожалуйста, попробуйте еще раз.</p>
+                <p class="mb-0" th:if="${param.payment == 'cancelled'}">Платеж был отменен.</p>
             </div>
         </div>
     </div>
 
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="fw-bold text-dark">Your Flight Bookings</h3>
+        <h3 class="fw-bold text-dark">Ваши бронирования авиарейсов</h3>
         <a th:href="@{/}" class="btn btn-primary btn-lg">
-            <i class="fas fa-plus me-2"></i>Book New Flight
+            <i class="fas fa-plus me-2"></i>Забронировать новый рейс
         </a>
     </div>
 
@@ -246,10 +246,10 @@
     <div th:if="${bookings.isEmpty()}" class="empty-state text-center py-5">
         <div class="py-5">
             <i class="fas fa-ticket-alt text-muted fs-1 mb-3"></i>
-            <h4 class="text-dark mb-3">No bookings yet</h4>
-            <p class="text-muted mb-4">You haven't booked any flights yet. Start your journey by searching for available flights.</p>
+            <h4 class="text-dark mb-3">Пока нет бронирований</h4>
+            <p class="text-muted mb-4">Вы еще не бронировали авиарейсы. Начните свое путешествие, выполнив поиск доступных рейсов.</p>
             <a th:href="@{/}" class="btn btn-primary btn-lg">
-                <i class="fas fa-search me-2"></i>Search Flights
+                <i class="fas fa-search me-2"></i>Поиск рейсов
             </a>
         </div>
     </div>
@@ -281,26 +281,26 @@
             <div class="col-md-3">
                 <div class="fw-bold fs-6" th:text="${booking.flight.departureCity} + ' → ' + ${booking.flight.arrivalCity}"></div>
                 <div class="text-muted small" th:text="${booking.flight.flightNumber}"></div>
-                <small class="text-primary" th:text="${booking.flight.airline?.name ?: 'Unknown Airline'}"></small>
+                <small class="text-primary" th:text="${booking.flight.airline?.name ?: 'Неизвестная авиакомпания'}"></small>
             </div>
 
             <!-- Departure Time -->
             <div class="col-md-2">
-                <div class="text-muted small">Departure</div>
+                <div class="text-muted small">Вылет</div>
                 <div class="fw-bold" th:text="${#temporals.format(booking.flight.departureTime, 'MMM dd')}"></div>
                 <div class="text-muted" th:text="${#temporals.format(booking.flight.departureTime, 'HH:mm')}"></div>
             </div>
 
             <!-- Seat Information -->
             <div class="col-md-2">
-                <div class="text-success fw-bold" th:text="'Seat ' + ${booking.seat.seatNumber}"></div>
+                <div class="text-success fw-bold" th:text="'Место ' + ${booking.seat.seatNumber}"></div>
                 <div class="text-muted small" th:text="${booking.seat.seatClass}"></div>
             </div>
 
             <!-- Price & Passenger -->
             <div class="col-md-2">
                 <div class="fw-bold fs-5" th:text="'$' + ${booking.totalPrice}"></div>
-                <div class="text-muted small" th:text="'Passenger: ' + ${booking.passengerName}"></div>
+                <div class="text-muted small" th:text="'Пассажир: ' + ${booking.passengerName}"></div>
             </div>
 
 
@@ -310,7 +310,7 @@
                     <a th:if="${booking.status.name() == 'PENDING_PAYMENT'}"
                        th:href="@{/booking/{id}/payment(id=${booking.id})}"
                        class="btn btn-success btn-sm">
-                        <i class="fas fa-credit-card me-1"></i>Pay
+                        <i class="fas fa-credit-card me-1"></i>Оплатить
                     </a>
 
                     <!-- Cancel Payment Button for Pending Payments -->
@@ -319,8 +319,8 @@
                           method="post"
                           class="mt-1">
                         <button type="submit" class="btn btn-outline-danger btn-sm w-100"
-                                onclick="return confirm('Are you sure you want to cancel this payment? The booking will be cancelled and the seat will be released.')">
-                            <i class="fas fa-times me-1"></i>Cancel Payment
+                                onclick="return confirm('Вы уверены, что хотите отменить этот платеж? Бронирование будет отменено и место будет освобождено.')">
+                            <i class="fas fa-times me-1"></i>Отменить платеж
                         </button>
                     </form>
 
@@ -328,14 +328,14 @@
                     <a th:if="${booking.status.name() == 'CONFIRMED'}"
                        th:href="@{/booking/{id}/refund-confirm(id=${booking.id})}"
                        class="btn btn-warning btn-sm">
-                        <i class="fas fa-undo me-1"></i>Refund
+                        <i class="fas fa-undo me-1"></i>Возврат
                     </a>
 
                     <a th:if="${booking.status.name() == 'CONFIRMED' and booking.payment != null and booking.payment.status == 'succeeded'}"
                        th:href="@{/booking/{id}/ticket(id=${booking.id})}"
                        class="btn btn-info btn-sm"
                        target="_blank">
-                        <i class="fas fa-download me-1"></i>Download Ticket
+                        <i class="fas fa-download me-1"></i>Скачать билет
                     </a>
 
 
@@ -347,19 +347,19 @@
         <div class="mt-3 p-3 info-section">
             <div class="row">
                 <div class="col-md-3">
-                    <strong>Aircraft:</strong>
+                    <strong>Самолет:</strong>
                     <span th:text="${booking.flight.aircraft.manufacturer + ' ' + booking.flight.aircraft.model}"></span>
                 </div>
                 <div class="col-md-3">
-                    <strong>Arrival:</strong>
+                    <strong>Прибытие:</strong>
                     <span th:text="${#temporals.format(booking.flight.arrivalTime, 'MMM dd, HH:mm')}"></span>
                 </div>
                 <div class="col-md-3">
-                    <strong>Booked on:</strong>
+                    <strong>Забронировано:</strong>
                     <span th:text="${#temporals.format(booking.bookingDate, 'MMM dd, yyyy')}"></span>
                 </div>
                 <div class="col-md-3">
-                    <strong>Flight Duration:</strong>
+                    <strong>Продолжительность полета:</strong>
                     <span th:text="${#temporals.format(booking.flight.arrivalTime, 'HH:mm')}"></span>
                 </div>
             </div>
@@ -367,11 +367,11 @@
             <!-- Payment Information -->
             <div th:if="${booking.payment}" class="row mt-2 pt-2 border-top">
                 <div class="col-md-6">
-                    <strong>Payment ID:</strong>
+                    <strong>ID платежа:</strong>
                     <span class="text-muted" th:text="${booking.payment.stripePaymentIntentId}"></span>
                 </div>
                 <div class="col-md-6">
-                    <strong>Last Updated:</strong>
+                    <strong>Последнее обновление:</strong>
                     <span class="text-muted" th:text="${#temporals.format(booking.payment.updatedAt, 'MMM dd, HH:mm')}"></span>
                 </div>
             </div>

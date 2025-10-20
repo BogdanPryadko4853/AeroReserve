@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="'Stats: ' + ${stats.flight.flightNumber} + ' - AeroReserve'"></title>
+    <title th:text="'Статистика: ' + ${stats.flight.flightNumber} + ' - AeroReserve'"></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -116,10 +116,10 @@
         </a>
         <div class="navbar-nav ms-auto">
             <a class="nav-link" th:href="@{/}">
-                <i class="fas fa-search me-1"></i>Search Flights
+                <i class="fas fa-search me-1"></i>Поиск рейсов
             </a>
             <a class="nav-link" th:href="@{/dashboard}">
-                <i class="fas fa-ticket-alt me-1"></i>My Bookings
+                <i class="fas fa-ticket-alt me-1"></i>Мои бронирования
             </a>
             <div class="nav-item dropdown" th:if="${user != null}">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
@@ -129,13 +129,13 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <li><a class="dropdown-item" th:href="@{/profile}">
-                        <i class="fas fa-user me-2"></i>My Profile
+                        <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
                     <li><hr class="dropdown-divider"></li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2"></i>Выйти
                             </button>
                         </form>
                     </li>
@@ -143,10 +143,10 @@
             </div>
             <div class="nav-item" th:unless="${user != null}">
                 <a class="nav-link" th:href="@{/login}">
-                    <i class="fas fa-sign-in-alt me-1"></i>Login
+                    <i class="fas fa-sign-in-alt me-1"></i>Войти
                 </a>
             </div>
-            <a class="nav-link active" th:href="@{/statistics}">Statistics</a>
+            <a class="nav-link active" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
 </nav>
@@ -154,7 +154,7 @@
 <div class="container mt-4">
     <!-- Back Button -->
     <a th:href="@{/statistics}" class="btn btn-outline-secondary mb-3">
-        <i class="fas fa-arrow-left"></i> Back to Statistics
+        <i class="fas fa-arrow-left"></i> Назад к статистике
     </a>
 
     <!-- Flight Header -->
@@ -168,10 +168,10 @@
                 </div>
                 <div class="col-md-4 text-end">
                     <div th:if="${stats.onTimePerformance >= 90}" class="badge bg-success fs-6">
-                        <i class="fas fa-trophy"></i> Top Performer
+                        <i class="fas fa-trophy"></i> Лучший показатель
                     </div>
                     <div th:if="${stats.loadFactor >= 80}" class="badge bg-info fs-6 mt-1">
-                        <i class="fas fa-users"></i> High Demand
+                        <i class="fas fa-users"></i> Высокий спрос
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@
                 <div class="card-body">
                     <i class="fas fa-users fa-2x text-primary mb-2"></i>
                     <h3 th:text="${stats.totalBookings}">0</h3>
-                    <p class="text-muted">Total Bookings</p>
+                    <p class="text-muted">Всего бронирований</p>
                 </div>
             </div>
         </div>
@@ -194,7 +194,7 @@
                 <div class="card-body">
                     <i class="fas fa-plane fa-2x text-success mb-2"></i>
                     <h3 th:text="${#numbers.formatDecimal(stats.onTimePerformance, 1, 1)} + '%'">0%</h3>
-                    <p class="text-muted">On-Time Performance</p>
+                    <p class="text-muted">Пунктуальность</p>
                 </div>
             </div>
         </div>
@@ -203,7 +203,7 @@
                 <div class="card-body">
                     <i class="fas fa-chart-line fa-2x text-info mb-2"></i>
                     <h3 th:text="${#numbers.formatDecimal(stats.loadFactor, 1, 1)} + '%'">0%</h3>
-                    <p class="text-muted">Load Factor</p>
+                    <p class="text-muted">Загрузка</p>
                 </div>
             </div>
         </div>
@@ -212,7 +212,7 @@
                 <div class="card-body">
                     <i class="fas fa-star fa-2x text-warning mb-2"></i>
                     <h3 th:text="${#numbers.formatDecimal(stats.customerSatisfactionScore, 1, 1)}">0</h3>
-                    <p class="text-muted">Satisfaction Score</p>
+                    <p class="text-muted">Оценка удовлетворенности</p>
                 </div>
             </div>
         </div>
@@ -223,23 +223,23 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">📈 Performance Details</h5>
+                    <h5 class="mb-0">📈 Детали эффективности</h5>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
-                        <strong>Average Delay:</strong>
-                        <span th:text="${#numbers.formatDecimal(stats.averageDelayMinutes, 1, 1)} + ' minutes'"></span>
+                        <strong>Средняя задержка:</strong>
+                        <span th:text="${#numbers.formatDecimal(stats.averageDelayMinutes, 1, 1)} + ' минут'"></span>
                     </div>
                     <div class="mb-3">
-                        <strong>Total Passengers:</strong>
+                        <strong>Всего пассажиров:</strong>
                         <span th:text="${stats.totalPassengers}"></span>
                     </div>
                     <div class="mb-3">
-                        <strong>Aircraft Capacity:</strong>
-                        <span th:text="${stats.flight.aircraft.totalSeats} + ' seats'"></span>
+                        <strong>Вместимость самолета:</strong>
+                        <span th:text="${stats.flight.aircraft.totalSeats} + ' мест'"></span>
                     </div>
                     <div class="mb-3">
-                        <strong>Completed Flights:</strong>
+                        <strong>Завершенные рейсы:</strong>
                         <span th:text="${stats.completedFlights}"></span>
                     </div>
                 </div>
@@ -248,12 +248,12 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">📊 Visual Metrics</h5>
+                    <h5 class="mb-0">📊 Визуальные показатели</h5>
                 </div>
                 <div class="card-body">
                     <!-- Load Factor Progress -->
                     <div class="mb-3">
-                        <strong>Load Factor:</strong>
+                        <strong>Загрузка:</strong>
                         <div class="progress mt-1" style="height: 25px;">
                             <div class="progress-bar"
                                  th:classappend="${stats.loadFactor > 80} ? 'bg-success' :
@@ -266,7 +266,7 @@
 
                     <!-- On-Time Performance Progress -->
                     <div class="mb-3">
-                        <strong>On-Time Performance:</strong>
+                        <strong>Пунктуальность:</strong>
                         <div class="progress mt-1" style="height: 25px;">
                             <div class="progress-bar bg-success"
                                  th:style="'width: ' + ${stats.onTimePerformance} + '%;'"
@@ -277,7 +277,7 @@
 
                     <!-- Satisfaction Stars -->
                     <div class="mb-3">
-                        <strong>Customer Satisfaction:</strong>
+                        <strong>Удовлетворенность клиентов:</strong>
                         <div class="mt-1">
                                 <span th:each="i : ${#numbers.sequence(1, 5)}">
                                     <i class="fas fa-star fa-lg"
@@ -294,7 +294,7 @@
     <!-- Last Updated -->
     <div class="text-center mt-4">
         <small class="text-muted">
-            Last updated: <span th:text="${#temporals.format(stats.lastUpdated, 'MMM dd, yyyy HH:mm:ss')}"></span>
+            Последнее обновление: <span th:text="${#temporals.format(stats.lastUpdated, 'MMM dd, yyyy HH:mm:ss')}"></span>
         </small>
     </div>
 </div>
