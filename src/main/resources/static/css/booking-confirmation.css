@@ -1,0 +1,66 @@
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.header {
+    text-align: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 30px;
+    border-radius: 10px 10px 0 0;
+}
+.ticket {
+    border: 2px solid #667eea;
+    border-radius: 10px;
+    margin: 20px 0;
+    background: white;
+}
+.flight-info {
+    padding: 20px;
+    background: #f8f9fa;
+}
+.route {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0;
+}
+.city {
+    text-align: center;
+}
+.city-name {
+    font-size: 24px;
+    font-weight: bold;
+    color: #667eea;
+}
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin: 20px 0;
+}
+.detail-item {
+    padding: 10px;
+    background: white;
+    border-radius: 5px;
+    border-left: 4px solid #667eea;
+}
+.barcode {
+    text-align: center;
+    padding: 20px;
+    background: #f5f5f5;
+    font-family: 'Courier New', monospace;
+    letter-spacing: 3px;
+}
+.footer {
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 0 0 10px 10px;
+    font-size: 12px;
+    color: #666;
+}
