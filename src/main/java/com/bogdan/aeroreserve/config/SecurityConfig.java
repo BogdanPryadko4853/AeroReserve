@@ -17,7 +17,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/api/admin/backup/**") // Отключаем CSRF для backup API
+                )
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/", "/css/**", "/js/**", "/register", "/login").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
