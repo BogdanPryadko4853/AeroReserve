@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head>
     <meta charset="UTF-8">
     <title>AeroReserve - Найдите свой идеальный рейс</title>
@@ -31,7 +33,9 @@
                     <li><a class="dropdown-item" th:href="@{/profile}">
                         <i class="fas fa-user me-2"></i>Мой профиль
                     </a></li>
-                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li>
                         <form th:action="@{/logout}" method="post" class="d-inline">
                             <button type="submit" class="dropdown-item">
@@ -46,6 +50,15 @@
                     <i class="fas fa-sign-in-alt me-1"></i>Войти
                 </a>
             </div>
+            <div sec:authorize="isAuthenticated()">
+                <div sec:authorize="hasRole('ADMIN')">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-cog me-1"></i> Admin Panel
+                        </a>
+                    </li>
+                </div>
+            </div>
             <a class="nav-link" th:href="@{/statistics}">Статистика</a>
         </div>
     </div>
@@ -56,7 +69,8 @@
     <div class="hero-section p-5 mb-5 text-center position-relative">
         <div class="position-relative z-1">
             <h1 class="display-4 fw-bold mb-3">✈️ Откройте свое следующее приключение</h1>
-            <p class="lead mb-4 fs-5">Бронируйте авиарейсы без усилий с нашей современной платформой. Испытайте будущее авиаперелетов.</p>
+            <p class="lead mb-4 fs-5">Бронируйте авиарейсы без усилий с нашей современной платформой. Испытайте будущее
+                авиаперелетов.</p>
             <div class="row justify-content-center mt-5">
                 <div class="col-md-3 mb-3">
                     <div class="feature-icon">
@@ -94,14 +108,16 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-label fw-semibold text-dark">Откуда</label>
-                        <input type="text" name="from" class="form-control form-control-lg" placeholder="Город вылета" required
+                        <input type="text" name="from" class="form-control form-control-lg" placeholder="Город вылета"
+                               required
                                th:value="${from != null} ? ${from} : ''">
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="form-group">
                         <label class="form-label fw-semibold text-dark">Куда</label>
-                        <input type="text" name="to" class="form-control form-control-lg" placeholder="Город назначения" required
+                        <input type="text" name="to" class="form-control form-control-lg" placeholder="Город назначения"
+                               required
                                th:value="${to != null} ? ${to} : ''">
                     </div>
                 </div>
@@ -153,17 +169,20 @@
                         <div class="row align-items-center">
                             <div class="col-md-5 text-center">
                                 <div class="fw-bold fs-5 text-dark" th:text="${flight.getDepartureCity()}"></div>
-                                <div class="text-muted" th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
+                                <div class="text-muted"
+                                     th:text="${#temporals.format(flight.departureTime, 'MMM dd, HH:mm')}"></div>
                             </div>
 
                             <div class="col-md-2 text-center flight-route">
                                 <div class="route-arrow">➝</div>
-                                <div class="text-muted small mt-1" th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
+                                <div class="text-muted small mt-1"
+                                     th:text="${#temporals.format(flight.arrivalTime, 'HH:mm')}"></div>
                             </div>
 
                             <div class="col-md-5 text-center">
                                 <div class="fw-bold fs-5 text-dark" th:text="${flight.getArrivalCity()}"></div>
-                                <div class="text-muted" th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
+                                <div class="text-muted"
+                                     th:text="${#temporals.format(flight.arrivalTime, 'MMM dd, HH:mm')}"></div>
                             </div>
                         </div>
                     </div>
@@ -186,7 +205,8 @@
             <div class="search-card p-5">
                 <i class="fas fa-plane-slash text-muted fs-1 mb-3"></i>
                 <h4 class="text-dark mb-3">Рейсы не найдены</h4>
-                <p class="text-muted mb-4">Мы не смогли найти рейсы, соответствующие вашим критериям поиска. Попробуйте изменить параметры поиска.</p>
+                <p class="text-muted mb-4">Мы не смогли найти рейсы, соответствующие вашим критериям поиска. Попробуйте
+                    изменить параметры поиска.</p>
                 <a th:href="@{/}" class="btn btn-primary btn-lg">
                     <i class="fas fa-redo me-2"></i>Искать снова
                 </a>
@@ -197,7 +217,8 @@
             <div class="search-card p-5">
                 <i class="fas fa-globe-americas text-primary fs-1 mb-3"></i>
                 <h4 class="text-dark mb-3">Готовы исследовать?</h4>
-                <p class="text-muted mb-4">Используйте форму поиска выше, чтобы найти удивительные предложения на авиарейсы в направления по всему миру.</p>
+                <p class="text-muted mb-4">Используйте форму поиска выше, чтобы найти удивительные предложения на
+                    авиарейсы в направления по всему миру.</p>
                 <div class="row justify-content-center">
                     <div class="col-md-8">
                         <div class="row text-start">

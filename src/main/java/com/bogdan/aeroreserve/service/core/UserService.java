@@ -5,6 +5,8 @@ import com.bogdan.aeroreserve.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -12,6 +14,15 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    public List<UserEntity> findAll() {
+        return userRepository.findAll();
+    }
+
+
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
 
     public UserEntity registerUser(UserEntity user) {
         if (userRepository.existsByEmail(user.getEmail())) {
