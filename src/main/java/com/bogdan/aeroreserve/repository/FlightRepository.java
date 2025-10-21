@@ -46,4 +46,8 @@ public interface FlightRepository extends JpaRepository<FlightEntity, Long> {
 
     @Query("SELECT f FROM FlightEntity f LEFT JOIN FETCH f.route r LEFT JOIN FETCH r.departureCity LEFT JOIN FETCH r.arrivalCity LEFT JOIN FETCH f.aircraft LEFT JOIN FETCH f.airline ORDER BY f.departureTime ASC")
     Page<FlightEntity> findAllWithDetails(Pageable pageable);
+
+    @Query("SELECT f FROM FlightEntity f LEFT JOIN FETCH f.seats WHERE f.id = :id")
+    @EntityGraph(value = "Flight.withAllDetails")
+    Optional<FlightEntity> findByIdWithSeats(@Param("id") Long id);
 }

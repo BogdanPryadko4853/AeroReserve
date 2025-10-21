@@ -17,15 +17,8 @@ FILE_NAME=$(basename "$FILE_PATH")
 echo "Uploading to MinIO: ${FILE_NAME}"
 echo "MinIO endpoint: ${MINIO_ENDPOINT}"
 
-# Конфигурируем AWS CLI для MinIO
-export AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
-export AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
-
-# Создаем бакет если не существует
-aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 mb "s3://${MINIO_BUCKET}" 2>/dev/null || true
-
-# Загружаем файл
-aws --endpoint-url "http://${MINIO_ENDPOINT}" s3 cp "$FILE_PATH" "s3://${MINIO_BUCKET}/${FILE_NAME}"
+# Загружаем файл используя mc
+mc cp "$FILE_PATH" "myminio/backups/${FILE_NAME}"
 
 if [ $? -eq 0 ]; then
     echo "Successfully uploaded to MinIO: ${FILE_NAME}"

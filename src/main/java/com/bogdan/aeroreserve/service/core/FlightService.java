@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class FlightService {
     private final RouteService routeService;
     private final CityService cityService;
 
-    // Кеширование всех рейсов с пагинацией
+
     @Cacheable(value = "flights", key = "'all-' + #pageable.pageNumber + '-' + #pageable.pageSize + '-' + #pageable.sort")
     @Transactional(readOnly = true)
     public Page<FlightEntity> getAllFlights(Pageable pageable) {
@@ -85,8 +86,7 @@ public class FlightService {
         return flightRepository.findById(id);
     }
 
-    // Кеширование доступных мест
-    @Cacheable(value = "seats", key = "'available-' + #flightId")
+
     @Transactional(readOnly = true)
     public List<SeatEntity> getAvailableSeats(Long flightId) {
         log.info("Loading available seats from database for flight: {}", flightId);
@@ -95,8 +95,7 @@ public class FlightService {
         return seatRepository.findByFlightAndAvailableTrue(flight);
     }
 
-    // Кеширование количества доступных мест
-    @Cacheable(value = "seats", key = "'count-' + #flightId")
+
     @Transactional(readOnly = true)
     public Integer getAvailableSeatsCount(Long flightId) {
         log.info("Counting available seats from database for flight: {}", flightId);
@@ -133,7 +132,6 @@ public class FlightService {
                 from, to, start, end);
     }
 
-    // Методы создания/обновления с инвалидацией кеша
     @Caching(evict = {
             @CacheEvict(value = "flights", allEntries = true),
             @CacheEvict(value = "seats", allEntries = true)
@@ -187,13 +185,11 @@ public class FlightService {
         return createFlight(flightNumber, route, departureTime, arrivalTime, price, aircraft, airline);
     }
 
-    // Метод для ручной инвалидации кеша
     @CacheEvict(value = {"flights", "seats"}, allEntries = true)
     public void evictAllCaches() {
         log.info("Evicting all flight and seat caches");
     }
 
-    // Инвалидация кеша конкретного рейса
     @Caching(evict = {
             @CacheEvict(value = "flights", key = "'detail-' + #flightId"),
             @CacheEvict(value = "flights", key = "'simple-' + #flightId"),
@@ -218,5 +214,11 @@ public class FlightService {
             case "Dubai-Singapore" -> 5846;
             default -> 1000;
         };
+    }
+
+    public List<SeatEntity> getAllSeats(Long flightId) {
+        return flightRepository.findByIdWithSeats(flightId)
+                .map(FlightEntity::getSeats)
+                .orElse(Collections.emptyList());
     }
 }

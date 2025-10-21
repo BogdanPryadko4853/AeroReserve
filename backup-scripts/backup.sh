@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Конфигурация - используем переменные окружения или значения по умолчанию
+# Конфигурация
 DB_HOST=${DB_HOST:-postgres}
 DB_PORT=${DB_PORT:-5432}
 DB_NAME=${DB_NAME:-aeroreserve_db}
@@ -21,7 +21,7 @@ echo "Database: ${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
 # Создаем дамп PostgreSQL
 export PGPASSWORD=$DB_PASS
-pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -F p > $BACKUP_PATH
+pg_dump -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -F p > "$BACKUP_PATH"
 
 if [ $? -ne 0 ]; then
     echo "Database dump failed!"
@@ -31,10 +31,10 @@ fi
 echo "Database dump created: ${BACKUP_FILE}"
 
 # Сжимаем бэкап
-gzip $BACKUP_PATH
+gzip "$BACKUP_PATH"
 echo "Backup compressed: ${COMPRESSED_FILE}"
 
-# Загружаем в MinIO
+# Загружаем в MinIO используя mc
 /bin/sh /backup-scripts/upload-to-minio.sh "/backups/${COMPRESSED_FILE}"
 
 if [ $? -eq 0 ]; then

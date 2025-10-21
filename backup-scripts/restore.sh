@@ -14,7 +14,7 @@ MINIO_BUCKET=${MINIO_BUCKET:-backups}
 if [ -z "$1" ]; then
     echo "Usage: $0 <backup_file_name>"
     echo "Available backups:"
-    aws --endpoint-url http://${MINIO_ENDPOINT} s3 ls s3://${MINIO_BUCKET}/ || exit 1
+    mc ls myminio/backups/ || exit 1
     exit 1
 fi
 
@@ -25,11 +25,9 @@ LOCAL_DECOMPRESSED_PATH="/backups/${BACKUP_FILE%.gz}"
 echo "Restoring from backup: ${BACKUP_FILE}"
 echo "Database: ${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
-# Скачиваем из MinIO
-export AWS_ACCESS_KEY_ID=$MINIO_ACCESS_KEY
-export AWS_SECRET_ACCESS_KEY=$MINIO_SECRET_KEY
-
-aws --endpoint-url http://${MINIO_ENDPOINT} s3 cp "s3://${MINIO_BUCKET}/${BACKUP_FILE}" $LOCAL_PATH
+# Скачиваем из MinIO используя mc
+echo "Downloading backup from MinIO..."
+mc cp "myminio/backups/${BACKUP_FILE}" "$LOCAL_PATH"
 
 if [ $? -ne 0 ]; then
     echo "Failed to download backup from MinIO"
@@ -41,8 +39,8 @@ echo "Backup downloaded from MinIO"
 # Распаковываем если нужно
 if echo "$BACKUP_FILE" | grep -q "\.gz$"; then
     echo "Decompressing backup..."
-    gunzip $LOCAL_PATH
-    LOCAL_PATH=$LOCAL_DECOMPRESSED_PATH
+    gunzip "$LOCAL_PATH"
+    LOCAL_PATH="$LOCAL_DECOMPRESSED_PATH"
     BACKUP_FILE="${BACKUP_FILE%.gz}"
 fi
 
@@ -59,11 +57,11 @@ echo "Creating new database..."
 psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d postgres -c "CREATE DATABASE ${DB_NAME};"
 
 echo "Restoring data..."
-psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f $LOCAL_PATH
+psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -f "$LOCAL_PATH"
 
 if [ $? -eq 0 ]; then
     echo "Database restored successfully from: ${BACKUP_FILE}"
-    rm -f $LOCAL_PATH
+    rm -f "$LOCAL_PATH"
 else
     echo "Database restore failed!"
     exit 1
