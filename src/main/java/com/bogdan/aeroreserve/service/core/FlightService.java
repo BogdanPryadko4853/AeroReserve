@@ -39,6 +39,17 @@ public class FlightService {
         return flightRepository.findAllWithDetails(pageable);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "flights", key = "'detail-' + #flight.id"),
+            @CacheEvict(value = "flights", key = "'simple-' + #flight.id"),
+            @CacheEvict(value = "flights", allEntries = true)
+    })
+    @Transactional
+    public FlightEntity updateFlight(FlightEntity flight) {
+        log.info("Updating flight: {}", flight.getFlightNumber());
+        return flightRepository.save(flight);
+    }
+
     @Cacheable(value = "flights", key = "'search-' + #from + '-' + #to + '-' + #date + '-' + #pageable.pageNumber + '-' + #pageable.pageSize")
     @Transactional(readOnly = true)
     public Page<FlightEntity> searchFlights(String from, String to, LocalDate date, Pageable pageable) {

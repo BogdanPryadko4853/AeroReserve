@@ -217,4 +217,9 @@ public class BookingService {
             System.err.println("Failed to send cancellation notification: " + e.getMessage());
         }
     }
+
+    public List<BookingEntity> getAllBookings() {
+        return bookingRepository.findAll();
+    }
+
 }
