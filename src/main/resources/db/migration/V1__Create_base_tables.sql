@@ -85,7 +85,7 @@ CREATE TABLE bookings (
                           booking_number VARCHAR(50) UNIQUE NOT NULL,
                           user_id BIGINT REFERENCES users(id),
                           flight_id BIGINT REFERENCES flights(id),
-                          seat_id BIGINT REFERENCES seats(id),  -- ✅ ПРАВИЛЬНО
+                          seat_id BIGINT REFERENCES seats(id),
                           passenger_name VARCHAR(255) NOT NULL,
                           total_price DECIMAL(10,2) NOT NULL,
                           status VARCHAR(30) DEFAULT 'PENDING_PAYMENT',

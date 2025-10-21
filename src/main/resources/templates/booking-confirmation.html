@@ -3,7 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <title>Авиабилет</title>
-    <link rel="stylesheet" th:href="@{/css/booking-confirmation.css}">
+    <style>
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .ticket {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin: 20px;
+            background: white;
+        }
+
+        .flight-info {
+            padding: 20px;
+        }
+
+        .route {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .city {
+            text-align: center;
+            flex: 1;
+        }
+
+        .city-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .detail-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .barcode {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 <div class="header">
@@ -31,7 +95,7 @@
             <div style="text-align: center;">
                 <div style="font-size: 24px;">➝</div>
                 <div th:text="${flight.flightNumber}"></div>
-                <div th:text="${flight.airline?.name ?: 'AeroReserve'}"></div>
+                <div th:text="${flight.airlineName}"></div>
             </div>
 
             <div class="city">
@@ -55,7 +119,7 @@
             </div>
             <div class="detail-item">
                 <strong>Самолет</strong><br>
-                <span th:text="${flight.aircraft.manufacturer + ' ' + flight.aircraft.model}"></span>
+                <span th:text="${flight.aircraftModel}"></span>
             </div>
             <div class="detail-item">
                 <strong>Всего оплачено</strong><br>

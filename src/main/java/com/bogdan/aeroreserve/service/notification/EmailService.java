@@ -35,7 +35,6 @@ public class EmailService implements NotificationService {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            // Настройка email
             helper.setTo(booking.getUser().getEmail());
             helper.setSubject("🎫 Your Flight Ticket - Booking #" + booking.getBookingNumber());
             helper.setFrom("no-reply@aeroreserve.com", "AeroReserve");
@@ -53,7 +52,6 @@ public class EmailService implements NotificationService {
 
             helper.setText(htmlContent, true);
 
-            // Прикрепляем PDF билета
             byte[] pdfBytes = pdfTicketService.generateTicket(booking, ticket);
             helper.addAttachment("ticket-" + ticket.getTicketNumber() + ".pdf",
                     new ByteArrayResource(pdfBytes));
