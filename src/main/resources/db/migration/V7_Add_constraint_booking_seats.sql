@@ -1,0 +1,1 @@
+ALTER TABLE bookings ADD CONSTRAINT uk_bookings_seat_id UNIQUE (seat_id);

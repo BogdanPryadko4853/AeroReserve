@@ -97,7 +97,7 @@ public class FlightEntity {
 
         try {
             cachedAvailableSeats = (int) seats.stream()
-                    .filter(SeatEntity::isAvailable)
+                    .filter(SeatEntity::isAvailableForBooking)
                     .count();
             return cachedAvailableSeats;
         } catch (Exception e) {

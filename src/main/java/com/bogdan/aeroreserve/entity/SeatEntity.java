@@ -10,27 +10,42 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class SeatEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "flight_id")
+    @JoinColumn(name = "flight_id", nullable = false)
     private FlightEntity flight;
 
+    @Column(name = "seat_number", nullable = false)
     private String seatNumber;
 
     @Enumerated(EnumType.STRING)
     private SeatClass seatClass;
 
-    private boolean available = true;
+    @Column(nullable = false)
+    private Boolean available = true;
 
-    @OneToOne(mappedBy = "seat", fetch = FetchType.LAZY)
-    private BookingEntity booking;
+    /**
+     * Помечает место как занятое
+     */
+    public void reserve() {
+        this.available = false;
+    }
 
-    public SeatEntity(FlightEntity flight, String seatNumber, SeatClass seatClass) {
-        this.flight = flight;
-        this.seatNumber = seatNumber;
-        this.seatClass = seatClass;
+    /**
+     * Освобождает место
+     */
+    public void release() {
+        this.available = true;
+    }
+
+    /**
+     * Проверяет, доступно ли место для бронирования
+     */
+    public boolean isAvailableForBooking() {
+        return available;
     }
 }

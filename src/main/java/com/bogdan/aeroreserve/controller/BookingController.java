@@ -159,7 +159,7 @@ public class BookingController {
             if (!booking.getUser().getId().equals(user.getId())) {
                 throw new RuntimeException("Access denied");
             }
-            bookingService.cancelPaymentAndBooking(id);
+            bookingService.cancelBooking(id);
 
 
             return "redirect:/dashboard?paymentCancelled=true";
