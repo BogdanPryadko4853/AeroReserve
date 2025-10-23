@@ -12,6 +12,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Контроллер для управления резервным копированием и восстановлением данных
+ * Требует роль ADMIN для доступа ко всем endpoint'ам
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequestMapping("api/admin/backup")
 @PreAuthorize("hasRole('ADMIN')")
@@ -20,12 +27,23 @@ public class BackupController {
 
     private final BackupService backupService;
 
+    /**
+     * Отображает страницу управления резервными копиями
+     *
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона панели администратора
+     */
     @GetMapping
     public String backupPage(Model model) {
         model.addAttribute("backups", backupService.listBackups());
         return "admin/dashboard";
     }
 
+    /**
+     * Создает новую резервную копию базы данных
+     *
+     * @return ResponseEntity с результатом операции
+     */
     @PostMapping("/create")
     @ResponseBody
     public ResponseEntity<Map<String, String>> createBackup() {
@@ -43,6 +61,12 @@ public class BackupController {
         }
     }
 
+    /**
+     * Восстанавливает базу данных из указанной резервной копии
+     *
+     * @param request Map с именем файла резервной копии
+     * @return ResponseEntity с результатом операции
+     */
     @PostMapping("/restore")
     @ResponseBody
     public ResponseEntity<Map<String, String>> restoreBackup(@RequestBody Map<String, String> request) {
@@ -68,6 +92,11 @@ public class BackupController {
         }
     }
 
+    /**
+     * Возвращает список доступных резервных копий
+     *
+     * @return ResponseEntity со списком имен резервных копий
+     */
     @GetMapping("/list")
     @ResponseBody
     public ResponseEntity<List<String>> listBackups() {

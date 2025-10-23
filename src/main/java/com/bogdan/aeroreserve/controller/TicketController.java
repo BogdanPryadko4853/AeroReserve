@@ -15,6 +15,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * Контроллер для управления электронными билетами
+ * Обрабатывает генерацию и скачивание PDF билетов
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequiredArgsConstructor
 public class TicketController {
@@ -23,6 +30,14 @@ public class TicketController {
     private final BookingService bookingService;
     private final UserService userService;
 
+    /**
+     * Генерирует и скачивает PDF билет для бронирования
+     *
+     * @param id идентификатор бронирования
+     * @param userDetails данные аутентифицированного пользователя
+     * @return ResponseEntity с PDF файлом билета
+     * @throws RuntimeException если бронирование не найдено, нет доступа или не оплачено
+     */
     @GetMapping("/booking/{id}/ticket")
     public ResponseEntity<byte[]> downloadTicket(@PathVariable Long id,
                                                  @AuthenticationPrincipal UserDetails userDetails) {

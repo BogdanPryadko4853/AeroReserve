@@ -19,12 +19,28 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
+/**
+ * Контроллер для главной страницы и поиска рейсов
+ * Обрабатывает отображение рейсов, поиск и детальную информацию о рейсах
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequiredArgsConstructor
 public class HomeController {
     private final FlightService flightService;
     private final UserService userService;
 
+    /**
+     * Отображает главную страницу со списком рейсов
+     *
+     * @param userDetails данные аутентифицированного пользователя
+     * @param page номер страницы для пагинации
+     * @param size размер страницы для пагинации
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона главной страницы
+     */
     @GetMapping("/")
     public String home(@AuthenticationPrincipal UserDetails userDetails,
                        @RequestParam(defaultValue = "0") int page,
@@ -49,6 +65,18 @@ public class HomeController {
         return "home";
     }
 
+    /**
+     * Обрабатывает поиск рейсов по параметрам
+     *
+     * @param from город вылета
+     * @param to город прилета
+     * @param date дата вылета
+     * @param userDetails данные аутентифицированного пользователя
+     * @param page номер страницы для пагинации
+     * @param size размер страницы для пагинации
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона главной страницы с результатами поиска
+     */
     @GetMapping("/search")
     public String searchFlights(
             @RequestParam String from,
@@ -82,6 +110,14 @@ public class HomeController {
         return "home";
     }
 
+    /**
+     * Отображает детальную информацию о рейсе
+     *
+     * @param id идентификатор рейса
+     * @param userDetails данные аутентифицированного пользователя
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона детальной информации о рейсе
+     */
     @GetMapping("/flight/{id}")
     public String flightDetails(@PathVariable Long id,
                                 @AuthenticationPrincipal UserDetails userDetails,

@@ -11,12 +11,26 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * Контроллер для отображения статистики рейсов
+ * Предоставляет аналитику по производительности рейсов
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequiredArgsConstructor
 public class StatisticsController {
     private final FlightStatisticsService statisticsService;
     private final UserService userService;
 
+    /**
+     * Отображает главную панель статистики
+     *
+     * @param model модель для передачи данных в представление
+     * @param userDetails данные аутентифицированного пользователя
+     * @return имя шаблона панели статистики
+     */
     @GetMapping("/statistics")
     public String statisticsDashboard(Model model,
                                       @AuthenticationPrincipal UserDetails userDetails) {
@@ -28,6 +42,14 @@ public class StatisticsController {
         return "statistics-dashboard";
     }
 
+    /**
+     * Отображает детальную статистику по конкретному рейсу
+     *
+     * @param flightId идентификатор рейса
+     * @param model модель для передачи данных в представление
+     * @param userDetails данные аутентифицированного пользователя
+     * @return имя шаблона статистики рейса
+     */
     @GetMapping("/statistics/flight/{flightId}")
     public String flightStatistics(@PathVariable Long flightId, Model model,
                                    @AuthenticationPrincipal UserDetails userDetails) {
@@ -38,6 +60,11 @@ public class StatisticsController {
         return "flight-statistics";
     }
 
+    /**
+     * Обновляет статистику для всех рейсов
+     *
+     * @return перенаправление на панель статистики
+     */
     @GetMapping("/statistics/refresh")
     public String refreshStatistics() {
         statisticsService.initializeStatisticsForAllFlights();

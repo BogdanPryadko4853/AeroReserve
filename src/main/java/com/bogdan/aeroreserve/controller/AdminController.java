@@ -19,6 +19,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Контроллер для административных операций
+ * Требует роль ADMIN для доступа ко всем endpoint'ам
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequestMapping("/admin")
 @PreAuthorize("hasRole('ADMIN')")
@@ -29,12 +36,24 @@ public class AdminController {
     private final FlightService flightService;
     private final BookingService bookingService;
 
+    /**
+     * Отображает главную панель администратора
+     *
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона панели администратора
+     */
     @GetMapping("/dashboard")
     public String adminDashboard(Model model) {
         model.addAttribute("pageTitle", "Admin Dashboard");
         return "admin/dashboard";
     }
 
+    /**
+     * Отображает страницу управления пользователями
+     *
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона управления пользователями
+     */
     @GetMapping("/users")
     public String manageUsers(Model model) {
         List<UserEntity> users = userService.findAll();
@@ -42,12 +61,26 @@ public class AdminController {
         return "admin/users";
     }
 
+    /**
+     * Удаляет пользователя по идентификатору
+     *
+     * @param id идентификатор пользователя
+     * @return перенаправление на страницу управления пользователями
+     */
     @PostMapping("/users/{id}/delete")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users";
     }
 
+    /**
+     * Отображает страницу управления рейсами с пагинацией
+     *
+     * @param model модель для передачи данных в представление
+     * @param page номер страницы (по умолчанию 0)
+     * @param size размер страницы (по умолчанию 10)
+     * @return имя шаблона управления рейсами
+     */
     @GetMapping("/flights")
     public String manageFlights(Model model,
                                 @RequestParam(defaultValue = "0") int page,
@@ -62,6 +95,13 @@ public class AdminController {
         return "admin/flights";
     }
 
+    /**
+     * Обновляет статус рейса
+     *
+     * @param id идентификатор рейса
+     * @param status новый статус рейса
+     * @return перенаправление на страницу управления рейсами
+     */
     @PostMapping("/flights/{id}/status")
     public String updateFlightStatus(@PathVariable Long id,
                                      @RequestParam("status") FlightStatus status) {
@@ -72,6 +112,12 @@ public class AdminController {
         return "redirect:/admin/flights";
     }
 
+    /**
+     * Отображает страницу управления бронированиями
+     *
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона управления бронированиями
+     */
     @GetMapping("/bookings")
     public String manageBookings(Model model) {
         List<BookingEntity> bookings = bookingService.getAllBookings();
@@ -81,6 +127,12 @@ public class AdminController {
         return "admin/bookings";
     }
 
+    /**
+     * Отменяет бронирование по идентификатору
+     *
+     * @param id идентификатор бронирования
+     * @return перенаправление на страницу управления бронированиями
+     */
     @PostMapping("/bookings/{id}/cancel")
     public String cancelBooking(@PathVariable Long id) {
         try {
@@ -91,6 +143,12 @@ public class AdminController {
         return "redirect:/admin/bookings";
     }
 
+    /**
+     * Выполняет возврат средств за бронирование
+     *
+     * @param id идентификатор бронирования
+     * @return перенаправление на страницу управления бронированиями
+     */
     @PostMapping("/bookings/{id}/refund")
     public String refundBooking(@PathVariable Long id) {
         try {

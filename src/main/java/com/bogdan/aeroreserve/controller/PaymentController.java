@@ -21,6 +21,13 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
+/**
+ * Контроллер для обработки платежей и вебхуков Stripe
+ * Обрабатывает создание платежей, успешные/отмененные платежи и вебхуки
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Controller
 @RequiredArgsConstructor
 public class PaymentController {
@@ -32,9 +39,11 @@ public class PaymentController {
     private final BookingService bookingService;
     private final UserService userService;
 
-
     /**
      * Создание платежного намерения (API endpoint)
+     *
+     * @param bookingId идентификатор бронирования
+     * @return ResponseEntity с данными для оплаты
      */
     @PostMapping("/api/payment/create-intent")
     @ResponseBody
@@ -63,6 +72,12 @@ public class PaymentController {
 
     /**
      * Страница успешной оплаты
+     *
+     * @param payment_intent идентификатор платежного намерения
+     * @param session_id идентификатор сессии
+     * @param userDetails данные аутентифицированного пользователя
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона страницы успешной оплаты
      */
     @GetMapping("/payment/success")
     public String paymentSuccess(@RequestParam(required = false) String payment_intent,
@@ -98,6 +113,10 @@ public class PaymentController {
 
     /**
      * Страница отмены оплаты
+     *
+     * @param bookingId идентификатор бронирования
+     * @param model модель для передачи данных в представление
+     * @return имя шаблона страницы отмены оплаты
      */
     @GetMapping("/payment/cancel")
     public String paymentCancel(@RequestParam(required = false) Long bookingId,
@@ -113,6 +132,10 @@ public class PaymentController {
 
     /**
      * Вебхук для обработки событий от Stripe
+     *
+     * @param payload тело запроса от Stripe
+     * @param sigHeader заголовок подписи Stripe
+     * @return ResponseEntity с результатом обработки вебхука
      */
     @PostMapping("/webhook/stripe")
     @ResponseBody
@@ -142,6 +165,11 @@ public class PaymentController {
         }
     }
 
+    /**
+     * Обрабатывает успешный платеж от Stripe
+     *
+     * @param event событие от Stripe
+     */
     private void handlePaymentIntentSucceeded(Event event) {
         PaymentIntent paymentIntent = (PaymentIntent) event.getData().getObject();
         String paymentIntentId = paymentIntent.getId();
@@ -154,6 +182,11 @@ public class PaymentController {
         });
     }
 
+    /**
+     * Обрабатывает неудачный платеж от Stripe
+     *
+     * @param event событие от Stripe
+     */
     private void handlePaymentIntentFailed(Event event) {
         PaymentIntent paymentIntent = (PaymentIntent) event.getData().getObject();
         String paymentIntentId = paymentIntent.getId();
@@ -165,10 +198,21 @@ public class PaymentController {
         });
     }
 
+    /**
+     * Обрабатывает завершенную сессию checkout от Stripe
+     *
+     * @param event событие от Stripe
+     */
     private void handleCheckoutSessionCompleted(Event event) {
         System.out.println("Checkout session completed: " + event.getId());
     }
 
+    /**
+     * Получает идентификатор платежного намерения из сессии
+     *
+     * @param sessionId идентификатор сессии Stripe
+     * @return идентификатор платежного намерения
+     */
     private String getPaymentIntentFromSession(String sessionId) {
         try {
             com.stripe.model.checkout.Session session = com.stripe.model.checkout.Session.retrieve(sessionId);
