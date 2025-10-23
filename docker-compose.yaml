@@ -72,7 +72,7 @@ services:
         mc alias set myminio http://minio:9000 minioadmin minioadmin123 &&
         # Создаем bucket если не существует
         mc mb myminio/backups || true &&
-        echo '✅ Backup service with MinIO Client ready' &&
+        echo 'Backup service with MinIO Client ready' &&
         tail -f /dev/null
       "
 
