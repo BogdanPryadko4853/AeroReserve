@@ -6,10 +6,6 @@ DB_PORT=${DB_PORT:-5432}
 DB_NAME=${DB_NAME:-aeroreserve_db}
 DB_USER=${DB_USER:-aeroreserve_user}
 DB_PASS=${DB_PASS:-password}
-MINIO_ENDPOINT=${MINIO_ENDPOINT:-minio:9000}
-MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
-MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin123}
-MINIO_BUCKET=${MINIO_BUCKET:-backups}
 
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="backup_${DB_NAME}_${TIMESTAMP}.sql"
@@ -18,6 +14,12 @@ COMPRESSED_FILE="${BACKUP_FILE}.gz"
 
 echo "Starting database backup: ${BACKUP_FILE}"
 echo "Database: ${DB_HOST}:${DB_PORT}/${DB_NAME}"
+
+# Проверяем доступность pg_dump
+if ! command -v pg_dump &> /dev/null; then
+    echo "ERROR: pg_dump not found!"
+    exit 1
+fi
 
 # Создаем дамп PostgreSQL
 export PGPASSWORD=$DB_PASS
@@ -34,7 +36,7 @@ echo "Database dump created: ${BACKUP_FILE}"
 gzip "$BACKUP_PATH"
 echo "Backup compressed: ${COMPRESSED_FILE}"
 
-# Загружаем в MinIO используя mc
+# Загружаем в MinIO используя AWS CLI
 /bin/sh /backup-scripts/upload-to-minio.sh "/backups/${COMPRESSED_FILE}"
 
 if [ $? -eq 0 ]; then

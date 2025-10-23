@@ -1,20 +1,17 @@
 #!/bin/sh
 
-# Конфигурация - используем переменные окружения или значения по умолчанию
+# Конфигурация
 DB_HOST=${DB_HOST:-postgres}
 DB_PORT=${DB_PORT:-5432}
 DB_NAME=${DB_NAME:-aeroreserve_db}
 DB_USER=${DB_USER:-aeroreserve_user}
 DB_PASS=${DB_PASS:-password}
-MINIO_ENDPOINT=${MINIO_ENDPOINT:-minio:9000}
-MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY:-minioadmin}
-MINIO_SECRET_KEY=${MINIO_SECRET_KEY:-minioadmin123}
 MINIO_BUCKET=${MINIO_BUCKET:-backups}
 
 if [ -z "$1" ]; then
     echo "Usage: $0 <backup_file_name>"
     echo "Available backups:"
-    mc ls myminio/backups/ || exit 1
+    /usr/local/bin/mc ls myminio/backups/ || exit 1
     exit 1
 fi
 
@@ -27,7 +24,7 @@ echo "Database: ${DB_HOST}:${DB_PORT}/${DB_NAME}"
 
 # Скачиваем из MinIO используя mc
 echo "Downloading backup from MinIO..."
-mc cp "myminio/backups/${BACKUP_FILE}" "$LOCAL_PATH"
+/usr/local/bin/mc cp "myminio/${MINIO_BUCKET}/${BACKUP_FILE}" "$LOCAL_PATH"
 
 if [ $? -ne 0 ]; then
     echo "Failed to download backup from MinIO"

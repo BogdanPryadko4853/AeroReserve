@@ -37,7 +37,7 @@ services:
       - aeroreserve-network
 
   backup-service:
-    image: postgres:15
+    image: postgres:15-alpine
     container_name: backup-service
     restart: unless-stopped
     depends_on:
@@ -62,14 +62,17 @@ services:
       - aeroreserve-network
     command: >
       sh -c "
-        apt-get update && 
-        apt-get install -y curl wget && 
-        # Устанавливаем MinIO Client
-        wget -q -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc &&
+        chmod +x /backup-scripts/*.sh &&
+        # Устанавливаем MinIO Client (mc)
+        wget -O /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc &&
         chmod +x /usr/local/bin/mc &&
+        # Ждем немного чтобы файл разблокировался
+        sleep 2 &&
         # Настраиваем MinIO alias
         mc alias set myminio http://minio:9000 minioadmin minioadmin123 &&
-        echo '✅ Backup service with mc client ready' && 
+        # Создаем bucket если не существует
+        mc mb myminio/backups || true &&
+        echo '✅ Backup service with MinIO Client ready' &&
         tail -f /dev/null
       "
 
