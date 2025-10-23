@@ -19,6 +19,13 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Сервис для обработки платежей через Stripe
+ * Обеспечивает создание платежей, подтверждение, возвраты и отмены
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class StripePaymentService implements PaymentService {
@@ -37,6 +44,9 @@ public class StripePaymentService implements PaymentService {
 
     private final PaymentRepository paymentRepository;
 
+    /**
+     * Инициализация Stripe API с секретным ключом
+     */
     @PostConstruct
     public void init() {
         Stripe.apiKey = stripeSecretKey;
@@ -44,6 +54,10 @@ public class StripePaymentService implements PaymentService {
 
     /**
      * Создание платежного намерения для бронирования
+     *
+     * @param booking данные бронирования
+     * @return созданная сущность платежа
+     * @throws RuntimeException если не удалось создать платежное намерение
      */
     public PaymentEntity createPaymentIntent(BookingEntity booking) {
         try {
@@ -82,9 +96,12 @@ public class StripePaymentService implements PaymentService {
         }
     }
 
-
     /**
      * Подтверждение успешного платежа
+     *
+     * @param paymentIntentId идентификатор платежного намерения
+     * @return обновленная сущность платежа
+     * @throws RuntimeException если платеж не найден или произошла ошибка Stripe
      */
     public PaymentEntity confirmPayment(String paymentIntentId) {
         try {
@@ -106,6 +123,10 @@ public class StripePaymentService implements PaymentService {
 
     /**
      * Получение статуса платежа
+     *
+     * @param paymentIntentId идентификатор платежного намерения
+     * @return статус платежа
+     * @throws RuntimeException если произошла ошибка при получении статуса
      */
     public String getPaymentStatus(String paymentIntentId) {
         try {
@@ -116,9 +137,12 @@ public class StripePaymentService implements PaymentService {
         }
     }
 
-    // В StripePaymentService.java
     /**
      * Создание возврата средств
+     *
+     * @param paymentIntentId идентификатор платежного намерения
+     * @return обновленная сущность платежа со статусом возврата
+     * @throws RuntimeException если платеж не найден или произошла ошибка Stripe
      */
     public PaymentEntity createRefund(String paymentIntentId) {
         try {
@@ -147,7 +171,10 @@ public class StripePaymentService implements PaymentService {
     }
 
     /**
-     * Проверка возможности возврата
+     * Проверка возможности возврата средств
+     *
+     * @param paymentIntentId идентификатор платежного намерения
+     * @return true если возврат возможен, false в противном случае
      */
     public boolean canRefund(String paymentIntentId) {
         try {
@@ -160,6 +187,10 @@ public class StripePaymentService implements PaymentService {
 
     /**
      * Отмена платежа
+     *
+     * @param paymentIntentId идентификатор платежного намерения
+     * @return обновленная сущность платежа со статусом отмены
+     * @throws RuntimeException если платеж не найден, уже завершен или произошла ошибка Stripe
      */
     public PaymentEntity cancelPayment(String paymentIntentId) {
         try {

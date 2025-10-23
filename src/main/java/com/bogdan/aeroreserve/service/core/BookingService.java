@@ -42,15 +42,12 @@ public class BookingService {
         log.info("Creating booking for user: {}, flight: {}, seat: {}",
                 user.getEmail(), flightId, seatNumber);
 
-        // Находим рейс
         FlightEntity flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found with id: " + flightId));
 
-        // Находим место
         SeatEntity seat = seatRepository.findByFlightAndSeatNumber(flight, seatNumber)
                 .orElseThrow(() -> new RuntimeException("Seat not found: " + seatNumber));
 
-        // Проверяем доступность места
         if (!isSeatAvailable(seat)) {
             throw new RuntimeException("Seat is already booked: " + seatNumber);
         }
@@ -74,7 +71,6 @@ public class BookingService {
             return booking;
 
         } catch (Exception e) {
-            // В случае ошибки освобождаем место
             seat.release();
             seatRepository.save(seat);
             log.error("Failed to create booking", e);

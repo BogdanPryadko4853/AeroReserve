@@ -2,7 +2,6 @@ package com.bogdan.aeroreserve.service.generator;
 
 import com.bogdan.aeroreserve.entity.BookingEntity;
 import com.bogdan.aeroreserve.entity.TicketEntity;
-import com.bogdan.aeroreserve.service.core.TicketService;
 import com.itextpdf.io.font.constants.StandardFonts;
 import com.itextpdf.kernel.colors.ColorConstants;
 import com.itextpdf.kernel.font.PdfFont;
@@ -24,6 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Сервис для генерации PDF билетов
+ * Создает структурированные электронные билеты в формате PDF
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -31,7 +37,14 @@ public class PdfTicketService implements TicketGenerator {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MMM dd, yyyy");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    
+
+    /**
+     * Генерирует PDF билет на основе данных бронирования и билета
+     *
+     * @param booking данные бронирования
+     * @param ticket данные билета
+     * @return массив байтов с PDF содержимым
+     */
     @Override
     public byte[] generateTicket(BookingEntity booking, TicketEntity ticket) {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
@@ -58,7 +71,10 @@ public class PdfTicketService implements TicketGenerator {
     }
 
     /**
-     * Старый метод для обратной совместимости
+     * Генерирует PDF билет для обратной совместимости
+     *
+     * @param booking данные бронирования
+     * @return массив байтов с PDF содержимым
      */
     public byte[] generateTicketPdf(BookingEntity booking) {
         // Для обратной совместимости, создаем временный билет
@@ -69,6 +85,9 @@ public class PdfTicketService implements TicketGenerator {
         return generateTicket(booking, tempTicket);
     }
 
+    /**
+     * Добавляет заголовок билета
+     */
     private void addHeader(Document document, PdfFont boldFont, BookingEntity booking, TicketEntity ticket) {
         Paragraph title = new Paragraph("E-TICKET - BOARDING PASS")
                 .setFont(boldFont)
@@ -97,6 +116,9 @@ public class PdfTicketService implements TicketGenerator {
         document.add(new Paragraph("\n"));
     }
 
+    /**
+     * Добавляет информацию о пассажире и рейсе
+     */
     private void addPassengerFlightInfo(Document document, PdfFont boldFont, PdfFont normalFont,
                                         BookingEntity booking, TicketEntity ticket) {
         Table infoTable = new Table(new float[]{1, 1});
@@ -124,6 +146,9 @@ public class PdfTicketService implements TicketGenerator {
         document.add(infoTable);
     }
 
+    /**
+     * Добавляет информацию о маршруте и времени
+     */
     private void addRouteTimingInfo(Document document, PdfFont boldFont, PdfFont normalFont, BookingEntity booking) {
         Table routeTable = new Table(new float[]{2, 1, 2});
         routeTable.setWidth(UnitValue.createPercentValue(100));
@@ -165,6 +190,9 @@ public class PdfTicketService implements TicketGenerator {
         document.add(routeTable);
     }
 
+    /**
+     * Добавляет информацию о месте и деталях бронирования
+     */
     private void addSeatBookingInfo(Document document, PdfFont boldFont, PdfFont normalFont, BookingEntity booking) {
         Table detailsTable = new Table(new float[]{1, 1});
         detailsTable.setWidth(UnitValue.createPercentValue(100));
@@ -189,6 +217,9 @@ public class PdfTicketService implements TicketGenerator {
         document.add(detailsTable);
     }
 
+    /**
+     * Добавляет нижний колонтитул с дополнительной информацией
+     */
     private void addFooter(Document document, PdfFont normalFont) {
         document.add(new Paragraph("\n\n"));
 
@@ -218,6 +249,9 @@ public class PdfTicketService implements TicketGenerator {
         document.add(qrNote);
     }
 
+    /**
+     * Создает ячейку таблицы с заданными параметрами
+     */
     private Cell createCell(String text, PdfFont font, boolean isHeader) {
         Cell cell = new Cell();
         Paragraph paragraph = new Paragraph(text).setFont(font);
@@ -232,6 +266,9 @@ public class PdfTicketService implements TicketGenerator {
         return cell;
     }
 
+    /**
+     * Форматирует продолжительность полета
+     */
     private String formatDuration(java.time.LocalDateTime departure, java.time.LocalDateTime arrival) {
         java.time.Duration duration = java.time.Duration.between(departure, arrival);
         long hours = duration.toHours();
@@ -239,14 +276,19 @@ public class PdfTicketService implements TicketGenerator {
         return String.format("%dh %dm", hours, minutes);
     }
 
+    /**
+     * Возвращает формат генерируемого билета
+     */
     @Override
     public TicketFormat getFormat() {
         return TicketFormat.PDF;
     }
 
+    /**
+     * Проверяет поддержку формата билета
+     */
     @Override
     public boolean supports(TicketFormat format) {
         return TicketFormat.PDF == format;
     }
-
 }

@@ -18,6 +18,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Сервис для отправки email уведомлений
+ * Обрабатывает отправку подтверждений, уведомлений о возвратах и отменах
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 @Service
 @RequiredArgsConstructor
 public class EmailService implements NotificationService {
@@ -28,7 +35,11 @@ public class EmailService implements NotificationService {
     private final PdfTicketService pdfTicketService;
 
     /**
-     * Отправка email с билетом после успешной оплаты
+     * Отправляет email с подтверждением бронирования и прикрепленным билетом
+     *
+     * @param booking данные бронирования
+     * @param ticket данные билета
+     * @throws RuntimeException если не удалось отправить email
      */
     public void sendBookingConfirmation(BookingEntity booking, TicketEntity ticket) {
         try {
@@ -64,7 +75,10 @@ public class EmailService implements NotificationService {
     }
 
     /**
-     * Отправка уведомления о возврате средств
+     * Отправляет уведомление о возврате средств
+     *
+     * @param booking данные бронирования
+     * @throws RuntimeException если не удалось отправить email
      */
     public void sendRefundNotification(BookingEntity booking) {
         try {
@@ -93,7 +107,10 @@ public class EmailService implements NotificationService {
     }
 
     /**
-     * Отправка уведомления об отмене бронирования
+     * Отправляет уведомление об отмене бронирования
+     *
+     * @param booking данные бронирования
+     * @throws RuntimeException если не удалось отправить email
      */
     public void sendCancellationNotification(BookingEntity booking) {
         try {
