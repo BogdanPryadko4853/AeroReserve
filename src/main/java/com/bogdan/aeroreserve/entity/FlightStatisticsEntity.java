@@ -1,6 +1,5 @@
 package com.bogdan.aeroreserve.entity;
 
-import com.bogdan.aeroreserve.entity.FlightEntity;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
