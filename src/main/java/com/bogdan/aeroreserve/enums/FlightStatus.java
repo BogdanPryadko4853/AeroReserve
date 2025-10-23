@@ -1,5 +1,35 @@
 package com.bogdan.aeroreserve.enums;
 
+/**
+ * Перечисление статусов рейсов
+ * Определяет этапы жизненного цикла рейса
+ *
+ * @author Bogdan
+ * @version 1.0
+ */
 public enum FlightStatus {
-    SCHEDULED, BOARDING, DEPARTED, ARRIVED, CANCELLED
+    /**
+     * Запланирован - рейс запланирован, но еще не начался
+     */
+    SCHEDULED,
+
+    /**
+     * Посадка - идет посадка пассажиров на рейс
+     */
+    BOARDING,
+
+    /**
+     * Вылетел - рейс вылетел и находится в пути
+     */
+    DEPARTED,
+
+    /**
+     * Прибыл - рейс успешно завершен
+     */
+    ARRIVED,
+
+    /**
+     * Отменен - рейс отменен
+     */
+    CANCELLED
 }
